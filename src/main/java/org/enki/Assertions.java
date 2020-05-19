@@ -35,7 +35,7 @@ public class Assertions {
 
     /**
      * Assert that assertions are enabled.
-     *
+     * <p>
      * This is intended to be invoked as early as possible in the runtime of the application to ensure that assertions
      * are enabled.
      *
@@ -43,13 +43,14 @@ public class Assertions {
      */
     public static void assertAssertionsEnabled() {
         if (!assertionsEnabled()) {
-            throw new AssertionError("Assertions are not enabled. (Hint: You may need to pass -ea to the JVM command line.)");
+            throw new AssertionError(
+                    "Assertions are not enabled. (Hint: You may need to pass -ea to the JVM command line.)");
         }
     }
 
     /**
      * Determine if assertions are enabled.
-     *
+     * <p>
      * This implementation only checks for this package, but will generally work for sanity checking.
      *
      * @return <code>true</code> if assertions are enabled, <code>false</code> otherwise

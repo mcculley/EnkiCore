@@ -71,7 +71,8 @@ public class JsoupUtilities {
      * @return the {@link org.jsoup.Connection.Response Response} if successful
      * @throws IOException if anything goes wrong during the execution
      */
-    public static Connection.Response executeWithRetry(final Connection connection, final int numRetries) throws IOException {
+    public static Connection.Response executeWithRetry(final Connection connection, final int numRetries)
+            throws IOException {
         Objects.requireNonNull(connection);
         Preconditions.checkArgument(numRetries >= 1);
         connection.ignoreHttpErrors(true);
@@ -82,7 +83,8 @@ public class JsoupUtilities {
                 return response;
             } else {
                 if (numRetries == 1) {
-                    throw new HttpStatusException("HTTP error fetching URL", status, connection.request().url().toString());
+                    throw new HttpStatusException("HTTP error fetching URL", status,
+                            connection.request().url().toString());
                 }
 
                 if (status == HTTP_TOO_MANY_REQUESTS) {
@@ -96,7 +98,7 @@ public class JsoupUtilities {
             if (numRetries == 1) {
                 throw e;
             } else {
-                logger.log(Level.INFO, "Caught exception. Retrying", e);
+                logger.log(Level.INFO, "Caught exception. Retrying.", e);
             }
         }
 
