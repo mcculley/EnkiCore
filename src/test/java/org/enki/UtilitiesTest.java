@@ -24,10 +24,16 @@ package org.enki;
  * THE SOFTWARE.
  */
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.time.Duration;
 
 public class UtilitiesTest {
@@ -37,6 +43,16 @@ public class UtilitiesTest {
         final Duration d = Duration.ofSeconds(1);
         final Duration took = Utilities.timeRunnable(() -> Utilities.sleepUninterruptibly(d));
         assertTrue(took.compareTo(d) >= 0);
+    }
+
+    @Test
+    public void executeWithRetryTest() throws IOException {
+        final Connection connection = Jsoup.connect("https://github.com/mcculley/EnkiCore");
+        final Connection.Response response = JsoupUtilities.executeWithRetry(connection);
+        final Document document = response.parse();
+        final Elements titles = document.head().getElementsByTag("title");
+        assertEquals(1, titles.size());
+        assertEquals("GitHub - mcculley/EnkiCore", titles.get(0).text());
     }
 
 }
