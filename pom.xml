@@ -26,4 +26,12 @@
     </dependency>
   </dependencies>
 
+  <distributionManagement>
+     <repository>
+       <id>github</id>
+       <name>GitHub mcculley Apache Maven Packages</name>
+       <url>https://maven.pkg.github.com/mcculley/EnkiCore</url>
+     </repository>
+  </distributionManagement>
+
 </project>
