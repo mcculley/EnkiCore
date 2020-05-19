@@ -26,6 +26,9 @@ package org.enki;
  * #L%
  */
 
+/**
+ * Utilities for dealing with assertions.
+ */
 public class Assertions {
 
     private Assertions() {

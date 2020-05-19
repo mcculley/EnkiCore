@@ -43,10 +43,10 @@ public class Utilities {
     }
 
     /**
-     * Sleep until a specified time, ignoring <code>InterruptedException</code>. The current thread will sleep at least
-     * until the supplied <code>Instant</code>.
+     * Sleep until a specified time, ignoring {@link java.lang.InterruptedException InterruptedException}. The current
+     * thread will sleep at least until the supplied {@link java.time.Instant Instant}.
      *
-     * @param wakeupAt the <code>Instant</code> to wake up at
+     * @param wakeupAt the {@link java.time.Instant Instant} to wake up at
      */
     public static void sleepUninterruptibly(final Instant wakeupAt) {
         Instant now = Instant.now();
@@ -62,19 +62,19 @@ public class Utilities {
     }
 
     /**
-     * Sleep for the specified duration, ignoring <code>InterruptedException</code>.
+     * Sleep for the specified duration, ignoring {@link java.lang.InterruptedException InterruptedException}.
      *
-     * @param duration the <code>Duration</code> to sleep
+     * @param duration the {@link java.time.Duration Duration} to sleep
      */
     public static void sleepUninterruptibly(final Duration duration) {
         sleepUninterruptibly(Instant.now().plus(duration));
     }
 
     /**
-     * Time the execution of a <code>Runnable</code>.
+     * Time the execution of a {@link java.lang.Runnable Runnable}.
      *
-     * @param r the <code>Runnable</code> to execute
-     * @return the <code>Duration</code> taken
+     * @param r the {@link java.lang.Runnable Runnable} to execute
+     * @return the {@link java.time.Duration Duration} taken
      */
     public static Duration timeRunnable(final Runnable r) {
         final long start = System.nanoTime();
