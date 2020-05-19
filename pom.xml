@@ -6,7 +6,7 @@
 
     <groupId>org.enki</groupId>
     <artifactId>core</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
 
     <name>EnkiCore</name>
     <url>https://github.com/mcculley/EnkiCore</url>
