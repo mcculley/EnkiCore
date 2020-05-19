@@ -9,6 +9,7 @@
   <version>0.1</version>
 
   <name>EnkiCore</name>
+  <url>https://github.com/mcculley/EnkiCore</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
