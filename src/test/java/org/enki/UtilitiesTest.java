@@ -11,11 +11,8 @@ public class UtilitiesTest {
     @Test
     public void sleepUninterruptiblyTest() {
         final Duration d = Duration.ofSeconds(1);
-        final long start = System.currentTimeMillis();
-        Utilities.sleepUninterruptibly(d);
-        final long stop = System.currentTimeMillis();
-        final long took = stop - start;
-        assertTrue(took >= d.toMillis());
+        final Duration took = Utilities.timeRunnable(() -> Utilities.sleepUninterruptibly(d));
+        assertTrue(took.compareTo(d) >= 0);
     }
 
 }

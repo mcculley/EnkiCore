@@ -44,4 +44,16 @@ public class Utilities {
         sleepUninterruptibly(Instant.now().plus(duration));
     }
 
+    /**
+     * Time the execution of a <code>Runnable</code>.
+     *
+     * @param r the <code>Runnable</code> to execute
+     * @return the <code>Duration</code> taken
+     */
+    public static Duration timeRunnable(final Runnable r) {
+        final long start = System.nanoTime();
+        r.run();
+        return Duration.ofNanos(System.nanoTime() - start);
+    }
+
 }
