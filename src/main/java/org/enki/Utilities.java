@@ -24,6 +24,8 @@ package org.enki;
  * THE SOFTWARE.
  */
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -38,6 +40,31 @@ public class Utilities {
 
     private Utilities() {
         throw new AssertionError("static utility class is not intended to be instantiated");
+    }
+
+    /**
+     * Return a String that formats a count into a human readable number of bytes.
+     *
+     * See: https://stackoverflow.com/questions/3758606/how-can-i-convert-byte-size-into-a-human-readable-format-in-java
+     *
+     * @param bytes
+     * @return the formatted String.
+     */
+    public static String humanReadableByteCountBinary(long bytes) {
+        final long absB = bytes == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(bytes);
+        if (absB < 1024) {
+            return bytes + " B";
+        }
+
+        long value = absB;
+        final CharacterIterator ci = new StringCharacterIterator("KMGTPE");
+        for (int i = 40; i >= 0 && absB > 0xfffccccccccccccL >> i; i -= 10) {
+            value >>= 10;
+            ci.next();
+        }
+
+        value *= Long.signum(bytes);
+        return String.format("%.1f %ciB", value / 1024.0, ci.current());
     }
 
     /**
