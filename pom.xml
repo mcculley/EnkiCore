@@ -24,6 +24,15 @@
       <url>http://github.com/mcculley/EnkiCore/tree/master</url>
     </scm>
 
+    <developers>
+      <developer>
+        <name>Gene McCulley</name>
+        <email>mcculley@enki.org</email>
+        <organization>enki.org</organization>
+        <organizationUrl>https://github.com/mcculley</organizationUrl>
+      </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
