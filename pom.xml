@@ -6,7 +6,7 @@
 
     <groupId>org.enki</groupId>
     <artifactId>core</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
 
     <name>EnkiCore</name>
     <url>https://github.com/mcculley/EnkiCore</url>
@@ -41,10 +41,15 @@
     </dependencies>
 
     <distributionManagement>
+<!--        <repository>-->
+<!--            <id>github</id>-->
+<!--            <name>GitHub mcculley Apache Maven Packages</name>-->
+<!--            <url>https://maven.pkg.github.com/mcculley/EnkiCore</url>-->
+<!--        </repository>-->
         <repository>
-            <id>github</id>
-            <name>GitHub mcculley Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/mcculley/EnkiCore</url>
+            <id>ossrh</id>
+            <name>Central Repository OSSRH</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
