@@ -107,4 +107,21 @@ public class Utilities {
         return Duration.ofNanos(System.nanoTime() - start);
     }
 
+    /**
+     * The CloudFlare caching layer obfuscates email addresses. This decodes the address.
+     *
+     * @param s the encoded address
+     * @return the decoded address
+     */
+    public static String decodeCloudFlareEmail(final String s) {
+        final StringBuilder email = new StringBuilder();
+        final int r = Integer.parseInt(s.substring(0, 2), 16);
+        for (int n = 2; s.length() - n > 0; n += 2) {
+            final int i = Integer.parseInt(s.substring(n, n + 2), 16) ^ r;
+            email.append((char) i);
+        }
+
+        return email.toString();
+    }
+
 }
