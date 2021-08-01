@@ -47,7 +47,7 @@ public class Utilities {
      *
      * See: https://stackoverflow.com/questions/3758606/how-can-i-convert-byte-size-into-a-human-readable-format-in-java
      *
-     * @param bytes
+     * @param bytes the number of bytes
      * @return the formatted String.
      */
     public static String humanReadableByteCountBinary(long bytes) {
