@@ -6,7 +6,7 @@
 
     <groupId>org.enki</groupId>
     <artifactId>core</artifactId>
-    <version>0.0.11</version>
+    <version>0.0.13</version>
 
     <name>EnkiCore</name>
     <description>Some handy utilities.</description>
@@ -219,7 +219,8 @@
                 <configuration>
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <skipStaging>true</skipStaging>
+                    <close>true</close>
+                    <release>true</release>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
