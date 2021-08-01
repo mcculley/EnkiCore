@@ -141,28 +141,19 @@
                 </executions>
             </plugin>
 
-            <!--
-                        <plugin>
-                            <groupId>com.github.spotbugs</groupId>
-                            <artifactId>spotbugs-maven-plugin</artifactId>
-                            <version>4.2.1-SNAPSHOT</version>
-                            <dependencies>
-                                <dependency>
-                                    <groupId>com.github.spotbugs</groupId>
-                                    <artifactId>spotbugs</artifactId>
-                                    <version>4.0.0-beta1</version>
-                                </dependency>
-                            </dependencies>
-                            <executions>
-                                <execution>
-                                    <phase>package</phase>
-                                    <goals>
-                                        <goal>check</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                        </plugin>
-            -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
