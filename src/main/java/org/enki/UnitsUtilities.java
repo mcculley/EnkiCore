@@ -7,6 +7,7 @@ import javax.measure.quantity.Speed;
 public class UnitsUtilities {
 
     private UnitsUtilities() {
+        throw new AssertionError("static utility class is not intended to be instantiated");
     }
 
     // FIXME: This seems hokey. There should be a better way.
