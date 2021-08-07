@@ -33,7 +33,7 @@ public class CacheUtilities {
         return buf.toString();
     }
 
-    private static InputStream openCachedURL(final URL l) throws IOException {
+    public static InputStream openCachedURL(final URL l) throws IOException {
         final File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         final File cachedFile = new File(tmpDir, makeFileName(l));
         System.err.println("cachedFile=" + cachedFile);
@@ -45,7 +45,10 @@ public class CacheUtilities {
                 return new FileInputStream(cachedFile);
             } else {
                 System.err.println("cached file is expired. age=" + age);
-                cachedFile.delete();
+                final boolean deleted = cachedFile.delete();
+                if (!deleted) {
+                    throw new IOException("unable to delete stale file " + cachedFile);
+                }
             }
         }
 
