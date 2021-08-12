@@ -7,17 +7,20 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.asin;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
-import static java.lang.Math.round;
+import static java.lang.Math.floor;
+import static java.lang.Math.pow;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
 import static systems.uom.common.USCustomary.DEGREE_ANGLE;
-import static systems.uom.common.USCustomary.MILE;
-import static systems.uom.common.USCustomary.NAUTICAL_MILE;
 import static tech.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.unit.Units.RADIAN;
+
+// FIXME: This needs verification at 180/-180 boundary (and other boundaries).
 
 public class LatLong {
 
@@ -52,6 +55,9 @@ public class LatLong {
         this(other.latitude, other.longitude);
     }
 
+    // Radius of the Earth, according to WGS-84 (https://apps.dtic.mil/sti/pdfs/ADA280358.pdf).
+    private static final Quantity<Length> radiusOfEarth = Quantities.getQuantity(6378137, METRE);
+
     /**
      * Calculate distance squared between this coordinate and another.
      *
@@ -59,15 +65,12 @@ public class LatLong {
      * @return distance in meters
      */
     public Quantity<Length> distanceSquared(final LatLong b) {
-        // Radius of the Earth, according to WGS-84 (https://apps.dtic.mil/sti/pdfs/ADA280358.pdf).
-        final Quantity<Length> radiusOfEarth = Quantities.getQuantity(6378137, METRE);
-
         final double latDistance = toRadians(b.latitude - latitude);
         final double lonDistance = toRadians(b.longitude - longitude);
         final double a = sin(latDistance / 2) * sin(latDistance / 2) +
                 cos(toRadians(latitude)) * cos(toRadians(b.latitude)) * sin(lonDistance / 2) * sin(lonDistance / 2);
         final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-        return Quantities.getQuantity(Math.pow(radiusOfEarth.getValue().doubleValue() * c, 2), METRE);
+        return Quantities.getQuantity(pow(radiusOfEarth.getValue().doubleValue() * c, 2), METRE);
     }
 
     /**
@@ -78,6 +81,32 @@ public class LatLong {
      */
     public Quantity<Length> distance(final LatLong b) {
         return Quantities.getQuantity(sqrt(distanceSquared(b).getValue().doubleValue()), METRE);
+    }
+
+    /**
+     * Given a heading and a distance from this location, compute the new location.
+     *
+     * @param heading  the heading
+     * @param distance the distance
+     * @return the projected location
+     */
+    public LatLong plus(final Quantity<Angle> heading, final Quantity<Length> distance) {
+        final double bearingR = heading.to(RADIAN).getValue().doubleValue();
+        final double latR = toRadians(latitude);
+        final double lonR = toRadians(longitude);
+
+        final double distanceToRadius =
+                distance.to(METRE).getValue().doubleValue() / radiusOfEarth.to(METRE).getValue().doubleValue();
+
+        final double newLatR =
+                asin(sin(latR) * cos(distanceToRadius) + cos(latR) * sin(distanceToRadius) * cos(bearingR));
+        final double newLonR = lonR + atan2(sin(bearingR) * sin(distanceToRadius) * cos(latR),
+                cos(distanceToRadius) - sin(latR) * sin(newLatR));
+
+        final double latNew = toDegrees(newLatR);
+        final double lonNew = toDegrees(newLonR);
+
+        return new LatLong(latNew, lonNew);
     }
 
     /**
@@ -97,30 +126,70 @@ public class LatLong {
 
     @Override
     public String toString() {
-        return "LatLong{latitude=" + latitude + ", longitude=" + longitude + '}';
+        return String.format("%fº, %fº", latitude, longitude);
     }
 
-    public static void main(final String[] args) {
-        final LatLong hq = new LatLong(27.479587, -80.336276);
-        final LatLong yard = new LatLong(27.460798, -80.328079);
-        final Quantity<Length> distanceMeters = hq.distance(yard);
-        final Quantity<Length> distanceMiles = distanceMeters.to(MILE);
-        System.err.println("distanceMeters=" + distanceMeters);
-        System.err.println("distanceMiles=" + distanceMiles);
+    public static class DegreesDecimalMinutes {
 
-        final LatLong equator1 = new LatLong(0, 0);
-        final LatLong equator2 = new LatLong(1.0 / 60.0, 0);
-        final Quantity<Length> distanceMetersEquator = equator1.distance(equator2);
-        System.err.println("distanceMetersEquator=" + distanceMetersEquator);
-        System.err.println("distanceNauticalMilesEquator=" + distanceMetersEquator.to(NAUTICAL_MILE));
+        public final int latitudeDegrees, longitudeDegrees;
+        public final double latitudeDecimalMinutes, longitudeDecimalMinutes;
+
+        public DegreesDecimalMinutes(final int latitudeDegrees, final double latitudeDecimalMinutes,
+                                     final int longitudeDegrees, final double longitudeDecimalMinutes) {
+            this.latitudeDegrees = latitudeDegrees;
+            this.latitudeDecimalMinutes = latitudeDecimalMinutes;
+            this.longitudeDegrees = longitudeDegrees;
+            this.longitudeDecimalMinutes = longitudeDecimalMinutes;
+        }
+
+        public DegreesDecimalMinutes(final LatLong c) {
+            this((int) c.latitude, (abs(c.latitude) - floor(abs(c.latitude))) * 60.0, (int) c.longitude,
+                    (abs(c.longitude) - floor(abs(c.longitude))) * 60.0);
+        }
+
+        public String toString() {
+            return String.format("%dº %07.4f', %dº, %07.4f'", latitudeDegrees, latitudeDecimalMinutes, longitudeDegrees,
+                    longitudeDecimalMinutes);
+        }
+
     }
 
-    static {
-        // FIXME: I am not convinced this is right. Why do I need to round? Remove round() and fix.
-        assert round(new LatLong(27, -80).heading(new LatLong(26, -80)).getValue().doubleValue()) == 180;
-        assert round(new LatLong(26, -80).heading(new LatLong(27, -80)).getValue().doubleValue()) == 0;
-        assert round(new LatLong(26, -80).heading(new LatLong(26, -81)).getValue().doubleValue()) == 270;
-        assert round(new LatLong(26, -81).heading(new LatLong(26, -80)).getValue().doubleValue()) == 90;
+    public static class DegreesMinutesSeconds {
+
+        public final int latitudeDegrees, longitudeDegrees;
+        public final int latitudeMinutes, longitudeMinutes;
+        public final double latitudeSeconds, longitudeSeconds;
+
+        public DegreesMinutesSeconds(final int latitudeDegrees, final int latitudeMinutes, final double latitudeSeconds,
+                                     final int longitudeDegrees, final int longitudeMinutes,
+                                     final double longitudeSeconds) {
+            this.latitudeDegrees = latitudeDegrees;
+            this.latitudeMinutes = latitudeMinutes;
+            this.longitudeDegrees = longitudeDegrees;
+            this.longitudeMinutes = longitudeMinutes;
+            this.latitudeSeconds = latitudeSeconds;
+            this.longitudeSeconds = longitudeSeconds;
+        }
+
+        public DegreesMinutesSeconds(final LatLong c) {
+            final double absoluteLatitude = abs(c.latitude);
+            this.latitudeDegrees = (int) c.latitude;
+            final double minutesNotTruncatedLatitude = (absoluteLatitude - abs(latitudeDegrees)) * 60;
+            this.latitudeMinutes = (int) minutesNotTruncatedLatitude;
+            this.latitudeSeconds = (minutesNotTruncatedLatitude - latitudeMinutes) * 60;
+            final double absoluteLongitude = abs(c.longitude);
+            this.longitudeDegrees = (int) c.longitude;
+            final double minutesNotTruncatedLongitude = (absoluteLongitude - abs(longitudeDegrees)) * 60;
+            this.longitudeMinutes = (int) minutesNotTruncatedLongitude;
+            this.longitudeSeconds = (minutesNotTruncatedLongitude - longitudeMinutes) * 60;
+        }
+
+        public String toString() {
+            return String.format("%c%dº %02d' %07.4f\", %c%dº %02d' %07.4f\"", (latitudeDegrees > 0 ? 'N' : 'S'),
+                    abs(latitudeDegrees), latitudeMinutes, latitudeSeconds, (longitudeDegrees > 0 ? 'E' : 'W'),
+                    abs(longitudeDegrees), longitudeMinutes, longitudeSeconds);
+        }
+
     }
 
 }
