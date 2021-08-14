@@ -6,10 +6,10 @@ Some useful utilities.
 [![javadoc](https://javadoc.io/badge2/org.enki/core/javadoc.svg)](https://javadoc.io/doc/org.enki/core)
 
 To add this to your project:
-<pre><code>
+```
 <dependency>
   <groupId>org.enki</groupId>
   <artifactId>core</artifactId>
-  <version>[0.0.19,)</version>
+  <version>[0.0.26,)</version>
 </dependency>
-</code></pre>
+```
