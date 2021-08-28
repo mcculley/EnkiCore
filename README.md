@@ -10,6 +10,6 @@ To add this to your project:
 <dependency>
   <groupId>org.enki</groupId>
   <artifactId>core</artifactId>
-  <version>[0.0.26,)</version>
+  <version>[0.0.28,)</version>
 </dependency>
 ```
