@@ -65,6 +65,7 @@ public class LatLong {
      * @return distance in meters
      */
     public Quantity<Length> distanceSquared(final LatLong b) {
+        // FIXME: See org.geotools.geometry.jts.JTS.orthodromicDistance for a more accurate way to calculate distance.
         final double latDistance = toRadians(b.latitude - latitude);
         final double lonDistance = toRadians(b.longitude - longitude);
         final double a = sin(latDistance / 2) * sin(latDistance / 2) +
