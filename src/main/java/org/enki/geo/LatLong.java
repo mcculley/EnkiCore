@@ -6,6 +6,8 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 
+import java.net.URI;
+
 import static java.lang.Math.abs;
 import static java.lang.Math.asin;
 import static java.lang.Math.atan2;
@@ -44,6 +46,31 @@ public class LatLong {
 
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    /**
+     * Construct a LatLong using a supplied geo URI (https://datatracker.ietf.org/doc/html/rfc5870).
+     *
+     * @param geoURI the GeoURI
+     */
+    public LatLong(final URI geoURI) {
+        if (!geoURI.getScheme().equals("geo")) {
+            throw new IllegalArgumentException(
+                    String.format("unexpected scheme '%s' in '%s'", geoURI.getScheme(), geoURI));
+        }
+
+        final String location = geoURI.getSchemeSpecificPart().split(";")[0];
+        final String[] coordinates = location.split(",");
+        latitude = Double.parseDouble(coordinates[0]);
+        longitude = Double.parseDouble(coordinates[1]);
+
+        if (abs(longitude) > 180) {
+            throw new IllegalArgumentException("invalid longitude " + longitude);
+        }
+
+        if (abs(latitude) > 90) {
+            throw new IllegalArgumentException("invalid latitude " + latitude);
+        }
     }
 
     /**
@@ -128,6 +155,17 @@ public class LatLong {
     @Override
     public String toString() {
         return String.format("%fº, %fº", latitude, longitude);
+    }
+
+    // FIXME: Handle altitude in geo URI.
+
+    /**
+     * Convert this location to a geo URI (https://datatracker.ietf.org/doc/html/rfc5870).
+     *
+     * @return this location encoded as a geo URI.
+     */
+    public URI toGeoURI() {
+        return URI.create(String.format("geo:%f,%f", latitude, longitude));
     }
 
     public static class DegreesDecimalMinutes {
