@@ -26,7 +26,7 @@ public class CSVParser<T> implements Function<String[], T> {
     @Target(ElementType.PARAMETER)
     public @interface Column {
 
-        String name();
+        String value();
 
     }
 
@@ -127,7 +127,14 @@ public class CSVParser<T> implements Function<String[], T> {
         final Object[] arguments = new Object[parameterTypes.length];
         for (int i = 0; i < mappings.length; i++) {
             final Column mapping = mappings[i];
-            final String s = line[headerIndices.get(mapping.name())];
+            final Integer index = headerIndices.get(mapping.value());
+            if (index == null) {
+                throw new IllegalArgumentException(
+                        String.format("There is no column named '%s'. Columns are %s.", mapping.value(),
+                                headerIndices.keySet()));
+            }
+
+            final String s = line[index];
             final Class<?> pType = parameterTypes[i];
             Function<String, Object> parser = parsersByColumn.get(headerIndices.inverse().get(i));
             if (parser == null) {
