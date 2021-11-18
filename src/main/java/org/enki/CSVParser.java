@@ -31,21 +31,21 @@ public class CSVParser<T> implements Function<String[], T> {
     }
 
     private final Class<T> c;
-    private final Constructor constructor;
+    private final Constructor<?> constructor;
     private final BiMap<String, Integer> headerIndices;
     private final Column[] mappings;
     private final Class<?>[] parameterTypes;
-    private Map<Class, Function<String, Object>> parsersByType = new HashMap<>();
-    private Map<String, Function<String, Object>> parsersByColumn = new HashMap<>();
+    private final Map<Class<?>, Function<String, Object>> parsersByType = new HashMap<>();
+    private final Map<String, Function<String, Object>> parsersByColumn = new HashMap<>();
 
     {
         parsersByType.put(String.class, (s) -> s);
-        parsersByType.put(int.class, (s) -> Integer.parseInt(s));
-        parsersByType.put(long.class, (s) -> Long.parseLong(s));
-        parsersByType.put(float.class, (s) -> Float.parseFloat(s));
-        parsersByType.put(double.class, (s) -> Double.parseDouble(s));
-        parsersByType.put(Instant.class, (s) -> Instant.parse(s));
-        parsersByType.put(LocalDate.class, (s) -> LocalDate.parse(s));
+        parsersByType.put(int.class, Integer::parseInt);
+        parsersByType.put(long.class, Long::parseLong);
+        parsersByType.put(float.class, Float::parseFloat);
+        parsersByType.put(double.class, Double::parseDouble);
+        parsersByType.put(Instant.class, Instant::parse);
+        parsersByType.put(LocalDate.class, LocalDate::parse);
     }
 
     public CSVParser(final Class<T> c, final String[] header) {
@@ -57,7 +57,7 @@ public class CSVParser<T> implements Function<String[], T> {
     }
 
     public CSVParser(final Class<T> c, final String[] header,
-                     final Map<Class, Function<String, Object>> typeParsers,
+                     final Map<Class<?>, Function<String, Object>> typeParsers,
                      final Map<String, Function<String, Object>> columnParsers) {
         this(c, header);
         parsersByColumn.putAll(columnParsers);
@@ -68,26 +68,26 @@ public class CSVParser<T> implements Function<String[], T> {
 
         private final Class<T> c;
         private final String[] header;
-        private Map<Class, Function<String, Object>> typeParsers = new HashMap<>();
-        private Map<String, Function<String, Object>> columnParsers = new HashMap<>();
+        private final Map<Class<?>, Function<String, Object>> typeParsers = new HashMap<>();
+        private final Map<String, Function<String, Object>> columnParsers = new HashMap<>();
 
         public Builder(final Class<T> c, final String[] header) {
             this.c = c;
             this.header = header.clone();
         }
 
-        public Builder withTypeParsers(final Map<Class, Function<String, Object>> typeParsers) {
+        public Builder<T> withTypeParsers(final Map<Class<?>, Function<String, Object>> typeParsers) {
             this.typeParsers.putAll(typeParsers);
             return this;
         }
 
-        public Builder withColumnParsers(final Map<String, Function<String, Object>> columnParsers) {
+        public Builder<T> withColumnParsers(final Map<String, Function<String, Object>> columnParsers) {
             this.columnParsers.putAll(columnParsers);
             return this;
         }
 
         public CSVParser<T> build() {
-            return new CSVParser(c, header, typeParsers, columnParsers);
+            return new CSVParser<>(c, header, typeParsers, columnParsers);
         }
 
     }
@@ -102,8 +102,8 @@ public class CSVParser<T> implements Function<String[], T> {
         throw new AssertionError("expected a mapping annotation to be present");
     }
 
-    private static Column[] mappings(final Class c) {
-        final Constructor constructor = c.getConstructors()[0];
+    private static Column[] mappings(final Class<?> c) {
+        final Constructor<?> constructor = c.getConstructors()[0];
         final Annotation[][] a = constructor.getParameterAnnotations();
         final Column[] mappings = new Column[a.length];
         for (int i = 0; i < a.length; i++) {
