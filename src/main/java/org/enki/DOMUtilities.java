@@ -114,7 +114,7 @@ public class DOMUtilities {
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.transform(new DOMSource(doc), new StreamResult(baos));
 
-            return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+            return baos.toString(StandardCharsets.UTF_8);
         } catch (final Exception e) {
             throw new AssertionError(e);
         }

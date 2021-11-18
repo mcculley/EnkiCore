@@ -1,14 +1,10 @@
 package org.enki;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -52,7 +48,7 @@ public class Collections {
     public static <K, V> Set<Map.Entry<K, V>> sortByValue(final Map<K, V> map, final Comparator<V> c) {
         return java.util.Collections.unmodifiableSet(
                 map.entrySet().stream().sorted((o1, o2) -> c.compare(o1.getValue(), o2.getValue()))
-                        .collect(toLinkedHashMap((e) -> e.getKey(), (e) -> e.getValue())).entrySet());
+                        .collect(toLinkedHashMap(Map.Entry::getKey, Map.Entry::getValue)).entrySet());
     }
 
     /**

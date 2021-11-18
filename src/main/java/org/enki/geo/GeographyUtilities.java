@@ -3,6 +3,8 @@ package org.enki.geo;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 
+import java.util.Objects;
+
 import static systems.uom.common.USCustomary.DEGREE_ANGLE;
 
 public class GeographyUtilities {
@@ -40,17 +42,17 @@ public class GeographyUtilities {
     }
 
     static {
-        assert directionName(0) == "N";
-        assert directionName(11) == "N";
-        assert directionName(12) == "NNE";
-        assert directionName(33) == "NNE";
-        assert directionName(34) == "NE";
-        assert directionName(56) == "NE";
-        assert directionName(57) == "ENE";
-        assert directionName(78) == "ENE";
-        assert directionName(79) == "E";
-        assert directionName(348) == "WNW";
-        assert directionName(350) == "N";
+        assert Objects.equals(directionName(0), "N");
+        assert Objects.equals(directionName(11), "N");
+        assert Objects.equals(directionName(12), "NNE");
+        assert Objects.equals(directionName(33), "NNE");
+        assert Objects.equals(directionName(34), "NE");
+        assert Objects.equals(directionName(56), "NE");
+        assert Objects.equals(directionName(57), "ENE");
+        assert Objects.equals(directionName(78), "ENE");
+        assert Objects.equals(directionName(79), "E");
+        assert Objects.equals(directionName(348), "WNW");
+        assert Objects.equals(directionName(350), "N");
     }
 
 }
