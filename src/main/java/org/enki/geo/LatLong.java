@@ -203,12 +203,12 @@ public class LatLong {
         }
 
         public String toString() {
-            return String.format("%dº %07.4f', %dº %07.4f'", latitudeDegrees, latitudeDecimalMinutes, longitudeDegrees,
+            return String.format("%dº %.8f', %dº %.8f'", latitudeDegrees, latitudeDecimalMinutes, longitudeDegrees,
                     longitudeDecimalMinutes);
         }
 
         public String toStringCardinal() {
-            return String.format("%dº %07.4f' %c, %dº %07.4f' %c", abs(latitudeDegrees), latitudeDecimalMinutes,
+            return String.format("%dº %.8f' %c, %dº %.8f' %c", abs(latitudeDegrees), latitudeDecimalMinutes,
                     (latitudeDegrees > 0 ? 'N' : 'S'), abs(longitudeDegrees),
                     longitudeDecimalMinutes, (longitudeDegrees > 0 ? 'E' : 'W'));
         }
@@ -252,7 +252,7 @@ public class LatLong {
         }
 
         public String toString() {
-            return String.format("%dº %02d' %07.4f\" %c, %dº %02d' %07.4f\" %c",
+            return String.format("%dº %d' %.8f\" %c, %dº %d' %.8f\" %c",
                     abs(latitudeDegrees), latitudeMinutes, latitudeSeconds, (latitudeDegrees > 0 ? 'N' : 'S'),
                     abs(longitudeDegrees), longitudeMinutes, longitudeSeconds, (longitudeDegrees > 0 ? 'E' : 'W'));
         }
