@@ -7,10 +7,12 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 
 import java.net.URI;
+import java.util.Objects;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.asin;
 import static java.lang.Math.atan2;
+import static java.lang.Math.copySign;
 import static java.lang.Math.cos;
 import static java.lang.Math.floor;
 import static java.lang.Math.pow;
@@ -153,6 +155,20 @@ public class LatLong {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LatLong latLong = (LatLong) o;
+        return Double.compare(latLong.latitude, latitude) == 0 &&
+                Double.compare(latLong.longitude, longitude) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(latitude, longitude);
+    }
+
+    @Override
     public String toString() {
         return String.format("%fº, %fº", latitude, longitude);
     }
@@ -187,8 +203,20 @@ public class LatLong {
         }
 
         public String toString() {
-            return String.format("%dº %07.4f', %dº, %07.4f'", latitudeDegrees, latitudeDecimalMinutes, longitudeDegrees,
+            return String.format("%dº %07.4f', %dº %07.4f'", latitudeDegrees, latitudeDecimalMinutes, longitudeDegrees,
                     longitudeDecimalMinutes);
+        }
+
+        public String toStringCardinal() {
+            return String.format("%dº %07.4f' %c, %dº %07.4f' %c", abs(latitudeDegrees), latitudeDecimalMinutes,
+                    (latitudeDegrees > 0 ? 'N' : 'S'), abs(longitudeDegrees),
+                    longitudeDecimalMinutes, (longitudeDegrees > 0 ? 'E' : 'W'));
+        }
+
+        public LatLong getLatLong() {
+            final double latitude = copySign(abs(latitudeDegrees) + latitudeDecimalMinutes / 60, latitudeDegrees);
+            final double longitude = copySign(abs(longitudeDegrees) + longitudeDecimalMinutes / 60, longitudeDegrees);
+            return new LatLong(latitude, longitude);
         }
 
     }
@@ -224,9 +252,18 @@ public class LatLong {
         }
 
         public String toString() {
-            return String.format("%c%dº %02d' %07.4f\", %c%dº %02d' %07.4f\"", (latitudeDegrees > 0 ? 'N' : 'S'),
-                    abs(latitudeDegrees), latitudeMinutes, latitudeSeconds, (longitudeDegrees > 0 ? 'E' : 'W'),
-                    abs(longitudeDegrees), longitudeMinutes, longitudeSeconds);
+            return String.format("%dº %02d' %07.4f\" %c, %dº %02d' %07.4f\" %c",
+                    abs(latitudeDegrees), latitudeMinutes, latitudeSeconds, (latitudeDegrees > 0 ? 'N' : 'S'),
+                    abs(longitudeDegrees), longitudeMinutes, longitudeSeconds, (longitudeDegrees > 0 ? 'E' : 'W'));
+        }
+
+        public LatLong getLatLong() {
+            final double latitude =
+                    copySign(abs(latitudeDegrees) + latitudeMinutes / 60.0 + latitudeSeconds / 3600.0, latitudeDegrees);
+            final double longitude =
+                    copySign(abs(longitudeDegrees) + longitudeMinutes / 60.0 + longitudeSeconds / 3600.0,
+                            longitudeDegrees);
+            return new LatLong(latitude, longitude);
         }
 
     }

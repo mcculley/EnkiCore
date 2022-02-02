@@ -5,6 +5,8 @@ import tech.units.indriya.quantity.Quantities;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 
+import java.util.Objects;
+
 import static tech.units.indriya.unit.Units.METRE;
 
 public class LatLongElevation extends LatLong {
@@ -44,6 +46,20 @@ public class LatLongElevation extends LatLong {
      */
     public Quantity<Length> distance(final LatLongElevation b) {
         return Quantities.getQuantity(Math.sqrt(distanceSquared(b).getValue().doubleValue()), METRE);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        LatLongElevation that = (LatLongElevation) o;
+        return elevation.equals(that.elevation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), elevation);
     }
 
 }
