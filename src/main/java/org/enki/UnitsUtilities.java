@@ -12,6 +12,10 @@ public class UnitsUtilities {
 
     // FIXME: This seems hokey. There should be a better way.
     public static <C extends Quantity<C>> boolean isOfType(final Quantity<?> q, final Class<C> c) {
+        if (q == null) {
+            return false;
+        }
+
         try {
             q.asType(c);
             return true;
