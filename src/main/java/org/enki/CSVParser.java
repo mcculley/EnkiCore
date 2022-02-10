@@ -35,11 +35,11 @@ public class CSVParser<T> implements Function<String[], T> {
     private final BiMap<String, Integer> headerIndices;
     private final Column[] mappings;
     private final Class<?>[] parameterTypes;
-    private final Map<Class<?>, Function<String, Object>> parsersByType = new HashMap<>();
-    private final Map<String, Function<String, Object>> parsersByColumn = new HashMap<>();
+    private final Map<Class<?>, Function<String, ?>> parsersByType = new HashMap<>();
+    private final Map<String, Function<String, ?>> parsersByColumn = new HashMap<>();
 
     {
-        parsersByType.put(String.class, (s) -> s);
+        parsersByType.put(String.class, Function.identity());
         parsersByType.put(int.class, Integer::parseInt);
         parsersByType.put(long.class, Long::parseLong);
         parsersByType.put(float.class, Float::parseFloat);
@@ -136,7 +136,7 @@ public class CSVParser<T> implements Function<String[], T> {
 
             final String s = line[index];
             final Class<?> pType = parameterTypes[i];
-            Function<String, Object> parser = parsersByColumn.get(headerIndices.inverse().get(i));
+            Function<String, ?> parser = parsersByColumn.get(headerIndices.inverse().get(i));
             if (parser == null) {
                 parser = parsersByType.get(pType);
             }
