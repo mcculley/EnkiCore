@@ -142,9 +142,15 @@ public class CSVParser<T> implements Function<String[], T> {
             }
 
             if (parser == null) {
-                throw new AssertionError("do not know how to map String to " + pType);
+                throw new AssertionError(
+                        "do not know how to map String to " + pType + " for column " + mapping.value());
             } else {
-                arguments[i] = parser.apply(s);
+                try {
+                    arguments[i] = parser.apply(s);
+                } catch (final Exception x) {
+                    throw new IllegalArgumentException(
+                            String.format("could not parse '%s' for column %s", s, mapping.value()));
+                }
             }
         }
 
