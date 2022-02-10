@@ -38,12 +38,20 @@ public class CSVParser<T> implements Function<String[], T> {
     private final Map<Class<?>, Function<String, ?>> parsersByType = new HashMap<>();
     private final Map<String, Function<String, ?>> parsersByColumn = new HashMap<>();
 
+    private static Function<String, ?> nullableParser(final Function<String, ?> f) {
+        return s -> s == null || s.trim().isEmpty() ? null : f.apply(s);
+    }
+
     {
         parsersByType.put(String.class, Function.identity());
         parsersByType.put(int.class, Integer::parseInt);
+        parsersByType.put(Integer.class, nullableParser(Integer::parseInt));
         parsersByType.put(long.class, Long::parseLong);
+        parsersByType.put(Long.class, nullableParser(Long::parseLong));
         parsersByType.put(float.class, Float::parseFloat);
+        parsersByType.put(Float.class, nullableParser(Float::parseFloat));
         parsersByType.put(double.class, Double::parseDouble);
+        parsersByType.put(Double.class, nullableParser(Double::parseDouble));
         parsersByType.put(Instant.class, Instant::parse);
         parsersByType.put(LocalDate.class, LocalDate::parse);
     }
