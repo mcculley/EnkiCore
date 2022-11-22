@@ -12,9 +12,9 @@ public class Statistics {
     }
 
     public static double standardDeviation(final Collection<? extends Number> values) {
-        final double mean = values.stream().mapToDouble(Number::doubleValue).average().getAsDouble();
+        final double mean = values.stream().mapToDouble(Number::doubleValue).average().orElseThrow();
         final double sumOfSquaresOfDistance =
-                values.stream().mapToDouble((x) -> Math.pow(x.doubleValue() - mean, 2)).sum();
+                values.stream().mapToDouble(x -> Math.pow(x.doubleValue() - mean, 2)).sum();
         return Math.sqrt(sumOfSquaresOfDistance / values.size());
     }
 
