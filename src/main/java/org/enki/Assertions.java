@@ -24,23 +24,16 @@ package org.enki;
  * THE SOFTWARE.
  */
 
+import java.util.Map;
+
 /**
  * Utilities for dealing with assertions.
  */
 public class Assertions {
 
     private Assertions() {
-        throw new AssertionError("static utility class is not intended to be instantiated");
     }
 
-    /**
-     * Assert that assertions are enabled.
-     * <p>
-     * This is intended to be invoked as early as possible in the runtime of the application to ensure that assertions
-     * are enabled.
-     *
-     * @throws java.lang.AssertionError if assertions are not enabled.
-     */
     public static void assertAssertionsEnabled() {
         if (!assertionsEnabled()) {
             throw new AssertionError(
@@ -48,15 +41,54 @@ public class Assertions {
         }
     }
 
-    /**
-     * Determine if assertions are enabled.
-     * <p>
-     * This implementation only checks for this package, but will generally work for sanity checking.
-     *
-     * @return <code>true</code> if assertions are enabled, <code>false</code> otherwise
-     */
     public static boolean assertionsEnabled() {
         return Assertions.class.desiredAssertionStatus();
+    }
+
+    public static void setDefaultAssertStatusRecursive(final ClassLoader classLoader, final boolean status) {
+        classLoader.setDefaultAssertionStatus(status);
+        final ClassLoader parent = classLoader.getParent();
+        if (parent != null) {
+            setDefaultAssertStatusRecursive(parent, status);
+        }
+    }
+
+    public static void setDefaultAssertStatus(final Class<?> c, final boolean status) {
+        final ClassLoader classLoader = c.getClassLoader();
+        if (classLoader != null) {
+            classLoader.setClassAssertionStatus(c.getName(), status);
+            setDefaultAssertStatusRecursive(classLoader, status);
+            final Package p = c.getPackage();
+            classLoader.setPackageAssertionStatus(p.getName(), status);
+        }
+    }
+
+    public static void setDefaultAssertStatus(final StackTraceElement[] stElements, final boolean status) {
+        for (final StackTraceElement e : stElements) {
+            try {
+                final Class<?> c = Class.forName(e.getClassName());
+                setDefaultAssertStatus(c, status);
+            } catch (ClassNotFoundException cnfe) {
+                throw new AssertionError(cnfe);
+            }
+        }
+    }
+
+    public static void enableAssertions() {
+        if (!assertionsEnabled()) {
+            System.err.println("Assertions are not enabled. Enabling...");
+            setDefaultAssertStatusRecursive(ClassLoader.getSystemClassLoader(), true);
+            final Map<Thread, StackTraceElement[]> m = Thread.getAllStackTraces();
+            for (final StackTraceElement[] stack : m.values()) {
+                try {
+                    setDefaultAssertStatus(stack, true);
+                } catch (final Throwable t) {
+                    System.err.println("trouble with going up stack: " + t);
+                }
+            }
+
+            System.err.println("assertionsEnabled=" + assertionsEnabled());
+        }
     }
 
 }
