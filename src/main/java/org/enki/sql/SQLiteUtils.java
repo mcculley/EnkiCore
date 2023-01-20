@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
+import org.sqlite.Function;
 import org.sqlite.SQLiteErrorCode;
 import org.sqlite.SQLiteException;
 
@@ -16,6 +17,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
@@ -26,12 +28,43 @@ public class SQLiteUtils {
         throw new AssertionError("instantiation of utility class");
     }
 
-    private static void execute(final DSLContext c, final String s) {
+    public static void installRegExpFunction(final Connection connection) throws SQLException {
+        Function.create(connection, "REGEXP", new Function() {
+
+            @Override
+            protected void xFunc() throws SQLException {
+                final String expression = value_text(0);
+                final String value = value_text(1);
+                final String valueNormalized = value == null ? "" : value;
+                final Pattern pattern = Pattern.compile(expression);
+                result(pattern.matcher(valueNormalized).find() ? 1 : 0);
+            }
+
+        });
+    }
+
+    public static void execute(final DSLContext c, final String s) {
         c.connection(connection -> {
             try (Statement t = connection.createStatement()) {
                 t.execute(s);
             }
         });
+    }
+
+    public static void execute(final Connection c, final String s) throws SQLException {
+        try (Statement t = c.createStatement()) {
+            t.execute(s);
+        }
+    }
+
+    public static void executeCommands(final Connection connection, final String commands) throws SQLException {
+        final String[] commandsArray = commands.split(";");
+        for (final String command : commandsArray) {
+            final String trimmed = command.trim();
+            if (trimmed.length() > 0) {
+                execute(connection, trimmed);
+            }
+        }
     }
 
     public static void setJournalMode(final DSLContext c, final String mode) {
@@ -43,6 +76,10 @@ public class SQLiteUtils {
     }
 
     public static void vacuum(final DSLContext c) {
+        execute(c, "VACUUM;");
+    }
+
+    public static void vacuum(final Connection c) throws SQLException {
         execute(c, "VACUUM;");
     }
 
