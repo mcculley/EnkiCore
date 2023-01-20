@@ -44,11 +44,7 @@ public class SQLiteUtils {
     }
 
     public static void execute(final DSLContext c, final String s) {
-        c.connection(connection -> {
-            try (Statement t = connection.createStatement()) {
-                t.execute(s);
-            }
-        });
+        c.connection(connection -> execute(connection, s));
     }
 
     public static void execute(final Connection c, final String s) throws SQLException {
@@ -87,9 +83,17 @@ public class SQLiteUtils {
         execute(c, "ANALYZE;");
     }
 
-    public static void optimize(final DSLContext c, final int analysisLimit) throws SQLException {
+    public static void optimize(final Connection c, final int analysisLimit) throws SQLException {
         execute(c, String.format("PRAGMA analysis_limit = %d;", analysisLimit));
         execute(c, "PRAGMA optimize;");
+    }
+
+    public static void optimize(final Connection c) throws SQLException {
+        optimize(c, 0);
+    }
+
+    public static void optimize(final DSLContext c, final int analysisLimit) throws SQLException {
+        c.connection(connection -> optimize(connection, analysisLimit));
     }
 
     public static void optimize(final DSLContext c) throws SQLException {
