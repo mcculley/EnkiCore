@@ -74,16 +74,18 @@ public class SQLiteUtils {
     }
 
     private static Collection<Statistics1> getStat1(final Connection c) {
-        try (ResultSet rs = c.createStatement().executeQuery("select * from sqlite_stat1")) {
-            final List<Statistics1> l = new ArrayList<>();
-            while (rs.next()) {
-                final String table = rs.getString("tbl");
-                final String index = rs.getString("idx");
-                final String stat = rs.getString("stat");
-                l.add(new Statistics1(table, index, stat));
-            }
+        try (Statement s = c.createStatement()) {
+            try (ResultSet rs = s.executeQuery("select * from sqlite_stat1")) {
+                final List<Statistics1> l = new ArrayList<>();
+                while (rs.next()) {
+                    final String table = rs.getString("tbl");
+                    final String index = rs.getString("idx");
+                    final String stat = rs.getString("stat");
+                    l.add(new Statistics1(table, index, stat));
+                }
 
-            return l;
+                return l;
+            }
         } catch (final SQLException e) {
             throw new RuntimeException(e);
         }
