@@ -6,7 +6,7 @@
 
     <groupId>org.enki</groupId>
     <artifactId>core</artifactId>
-    <version>0.0.54</version>
+    <version>0.0.55</version>
 
     <name>EnkiCore</name>
     <description>Some handy utilities.</description>
