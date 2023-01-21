@@ -7,6 +7,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Objects;
 
 import static java.lang.Math.abs;
@@ -111,6 +112,15 @@ public class LatLong {
      */
     public Quantity<Length> distance(final LatLong b) {
         return Quantities.getQuantity(sqrt(distanceSquared(b).getValue().doubleValue()), METRE);
+    }
+
+    public static Quantity<Length> distance(final List<LatLong> route) {
+        Quantity<Length> sum = Quantities.getQuantity(0, METRE);
+        for (int i = 1; i < route.size(); i++) {
+            sum = sum.add(route.get(i).distance(route.get(i - 1)));
+        }
+
+        return sum;
     }
 
     /**
