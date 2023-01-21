@@ -83,6 +83,10 @@ public class SQLiteUtils {
         execute(c, "ANALYZE;");
     }
 
+    public static void analyze(final Connection c) throws SQLException {
+        execute(c, "ANALYZE;");
+    }
+
     public static void optimize(final Connection c, final int analysisLimit) throws SQLException {
         execute(c, String.format("PRAGMA analysis_limit = %d;", analysisLimit));
         execute(c, "PRAGMA optimize;");
