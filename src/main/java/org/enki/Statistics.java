@@ -1,5 +1,7 @@
 package org.enki;
 
+import com.google.common.base.Preconditions;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -16,6 +18,11 @@ public class Statistics {
         final double sumOfSquaresOfDistance =
                 values.stream().mapToDouble(x -> Math.pow(x.doubleValue() - mean, 2)).sum();
         return Math.sqrt(sumOfSquaresOfDistance / values.size());
+    }
+
+    public static double mean(final Collection<? extends Number> values) {
+        Preconditions.checkArgument(!values.isEmpty(), "argument must not be empty");
+        return values.stream().mapToDouble(Number::doubleValue).average().orElseThrow();
     }
 
     private static boolean close(final double a, final double b, final double epsilon) {
