@@ -1,4 +1,4 @@
-package org.enki;
+package org.enki.core;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;

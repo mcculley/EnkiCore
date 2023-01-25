@@ -1,4 +1,4 @@
-package org.enki;
+package org.enki.core;
 
 import java.awt.Color;
 

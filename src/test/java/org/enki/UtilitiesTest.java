@@ -24,6 +24,8 @@ package org.enki;
  * THE SOFTWARE.
  */
 
+import org.enki.core.JsoupUtilities;
+import org.enki.core.Utilities;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

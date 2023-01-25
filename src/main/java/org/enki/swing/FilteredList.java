@@ -1,6 +1,6 @@
 package org.enki.swing;
 
-import org.enki.Predicates;
+import org.enki.core.Predicates;
 
 import javax.swing.*;
 import java.util.Collections;

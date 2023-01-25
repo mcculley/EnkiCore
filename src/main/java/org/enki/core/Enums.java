@@ -1,4 +1,4 @@
-package org.enki;
+package org.enki.core;
 
 /*
  * EnkiCore
@@ -24,32 +24,29 @@ package org.enki;
  * THE SOFTWARE.
  */
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Objects;
+public class Enums {
 
-public class Resources {
-
-    private Resources() {
+    private Enums() {
         throw new AssertionError("static utility class is not intended to be instantiated");
     }
 
-    public static List<String> readLinesUnchecked(final URL resource) {
-        Objects.requireNonNull(resource);
-        return readLinesUnchecked(resource, StandardCharsets.UTF_8);
+    public static <T extends Enum<T>> T next(final T t) {
+        final int index = t.ordinal();
+        final Enum<T>[] constants = t.getClass().getEnumConstants();
+        if (index == constants.length - 1) {
+            return (T) constants[0];
+        } else {
+            return (T) constants[index + 1];
+        }
     }
 
-    public static List<String> readLinesUnchecked(final URL resource, final Charset charset) {
-        Objects.requireNonNull(resource);
-        Objects.requireNonNull(charset);
-        try {
-            return com.google.common.io.Resources.readLines(resource, charset);
-        } catch (final IOException e) {
-            throw new UncheckedIOException(e);
+    public static <T extends Enum<T>> T prev(final T t) {
+        final int index = t.ordinal();
+        final Enum<T>[] constants = t.getClass().getEnumConstants();
+        if (index == 0) {
+            return (T) constants[constants.length - 1];
+        } else {
+            return (T) constants[index - 1];
         }
     }
 

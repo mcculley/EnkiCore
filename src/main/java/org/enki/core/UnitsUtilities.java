@@ -1,4 +1,4 @@
-package org.enki;
+package org.enki.core;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;

@@ -1,4 +1,4 @@
-package org.enki;
+package org.enki.core;
 
 import com.google.common.collect.AbstractIterator;
 import org.w3c.dom.Document;
