@@ -316,8 +316,8 @@ public class CachingConnection extends WrappedConnection {
 
         @Override
         public void setNull(int parameterIndex, int sqlType) throws SQLException {
-            backingPreparedStatement().setNull(parameterIndex, x);
-            arguments.put(parameterIndex, x);
+            backingPreparedStatement().setNull(parameterIndex, sqlType);
+            arguments.put(parameterIndex, sqlType);
         }
 
         @Override
