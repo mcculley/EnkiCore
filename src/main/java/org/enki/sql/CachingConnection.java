@@ -316,22 +316,26 @@ public class CachingConnection extends WrappedConnection {
 
         @Override
         public void setNull(int parameterIndex, int sqlType) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setNull(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
         public void setBoolean(int parameterIndex, boolean x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setBoolean(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
         public void setByte(int parameterIndex, byte x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setByte(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
         public void setShort(int parameterIndex, short x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setShort(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
@@ -348,7 +352,8 @@ public class CachingConnection extends WrappedConnection {
 
         @Override
         public void setFloat(int parameterIndex, float x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setFloat(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
@@ -370,22 +375,26 @@ public class CachingConnection extends WrappedConnection {
 
         @Override
         public void setBytes(int parameterIndex, byte[] x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setBytes(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
         public void setDate(int parameterIndex, Date x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setDate(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
         public void setTime(int parameterIndex, Time x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setTime(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
         public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setTimestamp(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
@@ -458,22 +467,26 @@ public class CachingConnection extends WrappedConnection {
 
         @Override
         public void setRef(int parameterIndex, Ref x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setRef(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
         public void setBlob(int parameterIndex, Blob x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setBlob(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
         public void setClob(int parameterIndex, Clob x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setClob(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
         public void setArray(int parameterIndex, Array x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setArray(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
@@ -503,7 +516,8 @@ public class CachingConnection extends WrappedConnection {
 
         @Override
         public void setURL(int parameterIndex, URL x) throws SQLException {
-            throw new UnsupportedOperationException();
+            backingPreparedStatement().setURL(parameterIndex, x);
+            arguments.put(parameterIndex, x);
         }
 
         @Override
