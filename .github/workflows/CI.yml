@@ -12,3 +12,5 @@ jobs:
       - run: mvn --batch-mode --update-snapshots package
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
+      - name: jacoco-badge-generator
+        uses: cicirello/jacoco-badge-generator@v2.8.1
