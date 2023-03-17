@@ -1,7 +1,9 @@
 package org.enki.core;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -63,6 +65,21 @@ public class Collections {
     public static <K, V> Set<Map.Entry<K, V>> sortByValue(final Map<K, V> map) {
         final Comparator<V> c = (Comparator<V>) Comparator.naturalOrder();
         return sortByValue(map, c);
+    }
+
+    /**
+     * Given an object and a <code>List</code> of objects, concatenate them into a <code>List</code>.
+     *
+     * @param a the first object
+     * @param b the <code>List</code> of objects
+     * @param <T> the type of object
+     * @return a <code>List</code> containing all objects
+     */
+    public static <T> List<T> concat(final T a, final List<T> b) {
+        final List<T> l = new ArrayList<>();
+        l.add(a);
+        l.addAll(b);
+        return l;
     }
 
 }
