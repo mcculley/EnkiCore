@@ -19,10 +19,16 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class WrappedConnection implements Connection {
 
     private final Connection wrapped;
 
+    @SuppressFBWarnings(
+            value = "EI_EXPOSE_REP2",
+            justification = "The wrapped Connection is necessarily exposed."
+    )
     public WrappedConnection(final Connection wrapped) {
         this.wrapped = wrapped;
     }
