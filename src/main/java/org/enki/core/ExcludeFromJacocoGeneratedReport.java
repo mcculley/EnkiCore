@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 public @interface ExcludeFromJacocoGeneratedReport {
 
     // This is kind of a hack. Jacoco looks for an annotation with the string "Generated" in the name. We use this to
