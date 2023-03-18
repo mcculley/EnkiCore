@@ -77,7 +77,8 @@ public class UtilitiesTest {
 
     @Test
     public void testHexString() {
-        assertEquals("foo@bar.com", Utilities.decodeCloudFlareEmail(Utilities.encodeCloudFlareEmail("foo@bar.com")));
+        assertEquals("foo@bar.com",
+                Utilities.cloudFlareObfuscation.reverse().convert(Utilities.cloudFlareObfuscation.convert("foo@bar.com")));
     }
 
 }

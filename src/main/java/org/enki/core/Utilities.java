@@ -24,12 +24,15 @@ package org.enki.core;
  * THE SOFTWARE.
  */
 
+import com.google.common.base.Converter;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Random;
 
 /**
  * Utility functions that do not fit well elsewhere.
@@ -110,44 +113,52 @@ public class Utilities {
         return Duration.ofNanos(System.nanoTime() - start);
     }
 
+    public static @NotNull String to2DigitHexString(final byte x) {
+        final String s = Integer.toHexString(x & 0xFF);
+        return s.length() == 1 ? "0" + s : s;
+    }
+
     /**
-     * The CloudFlare caching layer obfuscates email addresses. This decodes the address.
+     * The CloudFlare caching layer obfuscates email addresses. This is an encoder/decoder for that scheme.
      *
-     * @param s the encoded address
-     * @return the decoded address
+     * FIXME: This should probably be in some "miscellaneous" package.
      */
-    public static @NotNull String decodeCloudFlareEmail(final @NotNull String s) {
-        final StringBuilder email = new StringBuilder();
-        final int r = Integer.parseInt(s.substring(0, 2), 16);
-        for (int n = 2; s.length() - n > 0; n += 2) {
-            final int i = Integer.parseInt(s.substring(n, n + 2), 16) ^ r;
-            email.append((char) i);
+    public static final Converter<String, String> cloudFlareObfuscation = new Converter<>() {
+
+        private final Random rng = new Random();
+
+        @Override
+        @SuppressFBWarnings(
+                value = "HE_INHERITS_EQUALS_USE_HASHCODE",
+                justification = "The Converter class only overrides equals() for documentation purposes, deferring it to super."
+        )
+        protected String doForward(final String s) {
+            final byte r = (byte) rng.nextInt();
+            final StringBuilder b = new StringBuilder();
+            b.append(to2DigitHexString(r));
+            final int length = s.length();
+            for (int i = 0; i < length; i++) {
+                final char c = s.charAt(i);
+                final byte encoded = (byte) (c ^ r);
+                b.append(to2DigitHexString(encoded));
+            }
+
+            return b.toString();
         }
 
-        return email.toString();
-    }
+        @Override
+        protected String doBackward(final String s) {
+            final StringBuilder email = new StringBuilder();
+            final int r = Integer.parseInt(s.substring(0, 2), 16);
+            for (int n = 2; s.length() - n > 0; n += 2) {
+                final int i = Integer.parseInt(s.substring(n, n + 2), 16) ^ r;
+                email.append((char) i);
+            }
 
-    private static String to2DigitHexString(final byte x) {
-        final String s = Integer.toHexString(x);
-        if (s.length() == 1)
-            return "0" + s;
-        else
-            return s;
-    }
-
-    public static @NotNull String encodeCloudFlareEmail(final @NotNull String email) {
-        final byte r = 12;
-        final StringBuilder b = new StringBuilder();
-        b.append(to2DigitHexString(r));
-        final int length = email.length();
-        for (int i = 0; i < length; i++) {
-            final char c = email.charAt(i);
-            final byte encoded = (byte) (c ^ r);
-            b.append(to2DigitHexString(encoded));
+            return email.toString();
         }
 
-        return b.toString();
-    }
+    };
 
     /**
      * Given a floating point number, render it into a String with no trailing zeros. (e.g. 25.0 renders as "25" and 25.050 renders
