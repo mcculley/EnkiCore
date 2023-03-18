@@ -127,7 +127,7 @@ public class Utilities {
         return email.toString();
     }
 
-    private static String to2DigitHexString(final int x) {
+    private static String to2DigitHexString(final byte x) {
         final String s = Integer.toHexString(x);
         if (s.length() == 1)
             return "0" + s;
@@ -136,13 +136,13 @@ public class Utilities {
     }
 
     public static @NotNull String encodeCloudFlareEmail(final @NotNull String email) {
-        final int r = 12;
+        final byte r = 12;
         final StringBuilder b = new StringBuilder();
         b.append(to2DigitHexString(r));
         final int length = email.length();
         for (int i = 0; i < length; i++) {
             final char c = email.charAt(i);
-            final int encoded = c ^ r;
+            final byte encoded = (byte) (c ^ r);
             b.append(to2DigitHexString(encoded));
         }
 

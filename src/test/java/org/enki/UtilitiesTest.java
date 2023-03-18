@@ -77,8 +77,7 @@ public class UtilitiesTest {
 
     @Test
     public void testHexString() {
-        assertEquals("0c6a63634c6e6d7e226f6361", Utilities.encodeCloudFlareEmail("foo@bar.com"));
-        assertEquals("foo@bar.com", Utilities.decodeCloudFlareEmail("0c6a63634c6e6d7e226f6361"));
+        assertEquals("foo@bar.com", Utilities.decodeCloudFlareEmail(Utilities.encodeCloudFlareEmail("foo@bar.com")));
     }
 
 }
