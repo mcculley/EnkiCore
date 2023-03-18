@@ -24,6 +24,8 @@ package org.enki.core;
  * THE SOFTWARE.
  */
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.time.Duration;
@@ -45,13 +47,13 @@ public class Utilities {
 
     /**
      * Return a String that formats a count into a human readable number of bytes.
-     *
+     * <p>
      * See: https://stackoverflow.com/questions/3758606/how-can-i-convert-byte-size-into-a-human-readable-format-in-java
      *
      * @param bytes the number of bytes
      * @return the formatted String.
      */
-    public static String humanReadableByteCountBinary(long bytes) {
+    public static @NotNull String humanReadableByteCountBinary(long bytes) {
         final long absB = bytes == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(bytes);
         if (absB < 1024) {
             return bytes + " B";
@@ -69,12 +71,12 @@ public class Utilities {
     }
 
     /**
-     * Sleep until a specified time, ignoring {@link java.lang.InterruptedException InterruptedException}. The current
-     * thread will sleep at least until the supplied {@link java.time.Instant Instant}.
+     * Sleep until a specified time, ignoring {@link java.lang.InterruptedException InterruptedException}. The current thread will
+     * sleep at least until the supplied {@link java.time.Instant Instant}.
      *
      * @param wakeupAt the {@link java.time.Instant Instant} to wake up at
      */
-    public static void sleepUninterruptibly(final Instant wakeupAt) {
+    public static void sleepUninterruptibly(final @NotNull Instant wakeupAt) {
         Instant now = Instant.now();
         while (now.compareTo(wakeupAt) <= 0) {
             try {
@@ -92,7 +94,7 @@ public class Utilities {
      *
      * @param duration the {@link java.time.Duration Duration} to sleep
      */
-    public static void sleepUninterruptibly(final Duration duration) {
+    public static void sleepUninterruptibly(final @NotNull Duration duration) {
         sleepUninterruptibly(Instant.now().plus(duration));
     }
 
@@ -102,7 +104,7 @@ public class Utilities {
      * @param r the {@link java.lang.Runnable Runnable} to execute
      * @return the {@link java.time.Duration Duration} taken
      */
-    public static Duration timeRunnable(final Runnable r) {
+    public static @NotNull Duration timeRunnable(final @NotNull Runnable r) {
         final long start = System.nanoTime();
         r.run();
         return Duration.ofNanos(System.nanoTime() - start);
@@ -114,7 +116,7 @@ public class Utilities {
      * @param s the encoded address
      * @return the decoded address
      */
-    public static String decodeCloudFlareEmail(final String s) {
+    public static @NotNull String decodeCloudFlareEmail(final @NotNull String s) {
         final StringBuilder email = new StringBuilder();
         final int r = Integer.parseInt(s.substring(0, 2), 16);
         for (int n = 2; s.length() - n > 0; n += 2) {
@@ -125,14 +127,36 @@ public class Utilities {
         return email.toString();
     }
 
+    private static String to2DigitHexString(final int x) {
+        final String s = Integer.toHexString(x);
+        if (s.length() == 1)
+            return "0" + s;
+        else
+            return s;
+    }
+
+    public static @NotNull String encodeCloudFlareEmail(final @NotNull String email) {
+        final int r = 12;
+        final StringBuilder b = new StringBuilder();
+        b.append(to2DigitHexString(r));
+        final int length = email.length();
+        for (int i = 0; i < length; i++) {
+            final char c = email.charAt(i);
+            final int encoded = c ^ r;
+            b.append(to2DigitHexString(encoded));
+        }
+
+        return b.toString();
+    }
+
     /**
-     * Given a floating point number, render it into a String with no trailing zeros. (e.g. 25.0 renders as "25" and
-     * 25.050 renders as "25.05").
+     * Given a floating point number, render it into a String with no trailing zeros. (e.g. 25.0 renders as "25" and 25.050 renders
+     * as "25.05").
      *
      * @param x the number to render
      * @return a String with no trailing zeros or decimal point if there are no fractional digits
      */
-    public static String formatWithoutTrailingZeros(final double x) {
+    public static @NotNull String formatWithoutTrailingZeros(final double x) {
         return Double.toString(x).replaceAll("\\.?0*$", "");
     }
 

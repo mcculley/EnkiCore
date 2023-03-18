@@ -75,4 +75,10 @@ public class UtilitiesTest {
         assertEquals("25.05", Utilities.formatWithoutTrailingZeros(25.05));
     }
 
+    @Test
+    public void testHexString() {
+        assertEquals("0c6a63634c6e6d7e226f6361", Utilities.encodeCloudFlareEmail("foo@bar.com"));
+        assertEquals("foo@bar.com", Utilities.decodeCloudFlareEmail("0c6a63634c6e6d7e226f6361"));
+    }
+
 }
