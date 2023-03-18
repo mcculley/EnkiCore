@@ -38,6 +38,7 @@ public class Utilities {
         Assertions.assertAssertionsEnabled();
     }
 
+    @ExcludeFromJacocoGeneratedReport
     private Utilities() {
         throw new AssertionError("static utility class is not intended to be instantiated");
     }

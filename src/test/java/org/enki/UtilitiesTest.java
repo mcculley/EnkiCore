@@ -57,4 +57,22 @@ public class UtilitiesTest {
         assertEquals("GitHub - mcculley/EnkiCore", titles.get(0).text());
     }
 
+    @Test
+    public void testHumanReadableByteCountBinary() {
+        assertEquals("5 B", Utilities.humanReadableByteCountBinary(5));
+        assertEquals("4.0 KiB", Utilities.humanReadableByteCountBinary(4096));
+        assertEquals("4.9 KiB", Utilities.humanReadableByteCountBinary(5000));
+        assertEquals("4.8 MiB", Utilities.humanReadableByteCountBinary(5000000));
+        assertEquals("4.7 GiB", Utilities.humanReadableByteCountBinary(5000000000L));
+        assertEquals("4.5 TiB", Utilities.humanReadableByteCountBinary(5000000000000L));
+        assertEquals("4.4 PiB", Utilities.humanReadableByteCountBinary(5000000000000000L));
+        assertEquals("4.3 EiB", Utilities.humanReadableByteCountBinary(5000000000000000000L));
+    }
+
+    @Test
+    public void testFormatWithoutTrailingZeros() {
+        assertEquals("25", Utilities.formatWithoutTrailingZeros(25.0));
+        assertEquals("25.05", Utilities.formatWithoutTrailingZeros(25.05));
+    }
+
 }
