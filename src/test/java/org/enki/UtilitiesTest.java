@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UtilitiesTest {
@@ -59,6 +60,7 @@ public class UtilitiesTest {
 
     @Test
     public void testHumanReadableByteCountBinary() {
+        assertThrows(IllegalArgumentException.class, () -> Utilities.humanReadableByteCountBinary(-5));
         assertEquals("5 B", Utilities.humanReadableByteCountBinary(5));
         assertEquals("4.0 KiB", Utilities.humanReadableByteCountBinary(4096));
         assertEquals("4.9 KiB", Utilities.humanReadableByteCountBinary(5000));
@@ -77,8 +79,10 @@ public class UtilitiesTest {
 
     @Test
     public void testHexString() {
-        assertEquals("foo@bar.com",
-                Utilities.cloudFlareObfuscation.reverse().convert(Utilities.cloudFlareObfuscation.convert("foo@bar.com")));
+        // Run this many times to exercise the paths reachable via the randomly selected number in the algorithm.
+        for (int i = 0; i < 256; i++)
+            assertEquals("foo@bar.com",
+                    Utilities.cloudFlareObfuscation.reverse().convert(Utilities.cloudFlareObfuscation.convert("foo@bar.com")));
     }
 
 }

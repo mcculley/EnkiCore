@@ -25,6 +25,7 @@ package org.enki.core;
  */
 
 import com.google.common.base.Converter;
+import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +58,8 @@ public class Utilities {
      * @return the formatted String.
      */
     public static @NotNull String humanReadableByteCountBinary(long bytes) {
-        final long absB = bytes == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(bytes);
+        Preconditions.checkArgument(bytes >= 0);
+        final long absB = Math.abs(bytes);
         if (absB < 1024) {
             return bytes + " B";
         }
@@ -120,7 +122,7 @@ public class Utilities {
 
     /**
      * The CloudFlare caching layer obfuscates email addresses. This is an encoder/decoder for that scheme.
-     *
+     * <p>
      * FIXME: This should probably be in some "miscellaneous" package.
      */
     public static final Converter<String, String> cloudFlareObfuscation = new Converter<>() {
