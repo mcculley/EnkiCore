@@ -2,6 +2,7 @@ package org.enki.core;
 
 import com.google.common.io.ByteSource;
 import com.google.common.io.ByteStreams;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +24,8 @@ public class CacheUtilities {
         throw new AssertionError("static utility class is not intended to be instantiated");
     }
 
-    private static String makeFileName(final URL l) {
+    @NotNull
+    private static String makeFileName(final @NotNull URL l) {
         final String s = l.toString();
         final StringBuilder buf = new StringBuilder();
         for (final char c : s.toCharArray()) {
@@ -44,7 +46,8 @@ public class CacheUtilities {
      * @return an InputStream for the resource or a cached copy of it
      * @throws IOException if any IO errors occur
      */
-    public static InputStream openCachedURL(final URL l) throws IOException {
+    @NotNull
+    public static InputStream openCachedURL(final @NotNull URL l) throws IOException {
         final File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         final File cachedFile = new File(tmpDir, makeFileName(l));
         System.err.println("cachedFile=" + cachedFile);

@@ -1,5 +1,6 @@
-package org.enki.core;
+package org.enki.units;
 
+import org.enki.core.ExcludeFromJacocoGeneratedReport;
 import org.jetbrains.annotations.NotNull;
 
 import javax.measure.Quantity;

@@ -1,4 +1,4 @@
-package org.enki.core;
+package org.enki.jsoup;
 
 /*
  * EnkiCore
@@ -25,6 +25,8 @@ package org.enki.core;
  */
 
 import com.google.common.base.Preconditions;
+import org.enki.core.Assertions;
+import org.enki.core.Utilities;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
