@@ -45,6 +45,9 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * Some utilities for dealing with XML.
+ */
 public class XMLUtils {
 
     @ExcludeFromJacocoGeneratedReport
@@ -163,7 +166,7 @@ public class XMLUtils {
      * Convert a URL to a URI, rethrowing any <code>URISyntaxException</code> as an <code>IllegalArgumentException</code>.
      *
      * @param u the URL to convert
-     * @return
+     * @return the <code>URI</code>
      */
     public static @NotNull URI toURIUnchecked(final @NotNull URL u) {
         Preconditions.checkNotNull(u);
@@ -180,8 +183,8 @@ public class XMLUtils {
      * @param u        the URL of the document to parse
      * @param validate <code>true</code> if the document should be validated
      * @return the parsed <code>Document</code>
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if there are any problems parsing the XML
+     * @throws IOException if any IO errors occur
      */
     public static @NotNull Document parse(final @NotNull URL u, final boolean validate) throws SAXException, IOException {
         return parse(toURIUnchecked(u), validate);
@@ -210,6 +213,8 @@ public class XMLUtils {
      * @param i        the <code>URI</code> of the document
      * @param validate <code>true</code> if the document should be validated
      * @return the parsed <code>Document</code>
+     * @throws SAXException if there are any problems parsing the XML
+     * @throws IOException if any IO errors occur
      */
     public static @NotNull Document parse(final @NotNull URI i, final boolean validate) throws SAXException, IOException {
         final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -249,6 +254,8 @@ public class XMLUtils {
      * @param i        the <code>URI</code> of the document
      * @param validate <code>true</code> if the document should be validated
      * @return the parsed <code>Document</code>
+     * @throws SAXException if there are any problems parsing the XML
+     * @throws IOException if any IO errors occur
      */
     public static @NotNull Document parse(final @NotNull InputStream i, final boolean validate) throws SAXException, IOException {
         final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -294,6 +301,13 @@ public class XMLUtils {
         return transformToHTML(loadTransformer(templateURL), document);
     }
 
+    /**
+     * Transform an XML document to HTML, using a supplied <code>Transformer</code>.
+     *
+     * @param transformer the <code>Transformer</code>
+     * @param document    the XML <code>Document</code> to transform
+     * @return the transformed <code>Document</code>
+     */
     public static @NotNull Document transformToHTML(final @NotNull Transformer transformer, final @NotNull Document document) {
         try {
             final DOMResult outputResult = new DOMResult();
