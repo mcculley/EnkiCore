@@ -24,16 +24,24 @@ package org.enki.core;
  * THE SOFTWARE.
  */
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Map;
 
 /**
  * Utilities for dealing with assertions.
  */
-public class Assertions {
+public final class Assertions {
 
+    @ExcludeFromJacocoGeneratedReport
     private Assertions() {
+        throw new AssertionError("static utility class is not intended to be instantiated");
     }
 
+    /**
+     * Assert that assertions are enabled. This is intended to be used in projects that want to ensure that assertions are always
+     * enabled. It will throw AssertionError if assertions are disabled.
+     */
     public static void assertAssertionsEnabled() {
         if (!assertionsEnabled()) {
             throw new AssertionError(
@@ -41,11 +49,20 @@ public class Assertions {
         }
     }
 
+    /**
+     * Determine if assertions are enabled.
+     * @return
+     */
     public static boolean assertionsEnabled() {
         return Assertions.class.desiredAssertionStatus();
     }
 
-    public static void setDefaultAssertStatusRecursive(final ClassLoader classLoader, final boolean status) {
+    /**
+     * Walk up through the hierarchy of ClassLoaders and set assertion status.
+     * @param classLoader the <code>ClassLaoder</code> to start with
+     * @param status the desired assertion checking status
+     */
+    public static void setDefaultAssertStatusRecursive(final @NotNull ClassLoader classLoader, final boolean status) {
         classLoader.setDefaultAssertionStatus(status);
         final ClassLoader parent = classLoader.getParent();
         if (parent != null) {
@@ -53,7 +70,13 @@ public class Assertions {
         }
     }
 
-    public static void setDefaultAssertStatus(final Class<?> c, final boolean status) {
+    /**
+     * Set the default assertion checking status for a supplied class and all classloaders it comes from.
+     *
+     * @param c the <code>Class</code> to start with
+     * @param status the desired assertion checking status
+     */
+    public static void setDefaultAssertStatus(final @NotNull Class<?> c, final boolean status) {
         final ClassLoader classLoader = c.getClassLoader();
         if (classLoader != null) {
             classLoader.setClassAssertionStatus(c.getName(), status);
@@ -63,7 +86,13 @@ public class Assertions {
         }
     }
 
-    public static void setDefaultAssertStatus(final StackTraceElement[] stElements, final boolean status) {
+    /**
+     * Set the default assertion checking status for a supplied set of StackTraceElement objects.
+     *
+     * @param stElements the StackTraceElement objects to use
+     * @param status the desired assertion checking status
+     */
+    public static void setDefaultAssertStatus(final @NotNull StackTraceElement[] stElements, final boolean status) {
         for (final StackTraceElement e : stElements) {
             try {
                 final Class<?> c = Class.forName(e.getClassName());
@@ -74,6 +103,9 @@ public class Assertions {
         }
     }
 
+    /**
+     * Best-effort force assertions to be enabled.
+     */
     public static void enableAssertions() {
         if (!assertionsEnabled()) {
             System.err.println("Assertions are not enabled. Enabling...");
