@@ -5,9 +5,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+/**
+ * A <code>String</code> that matches a defined <code>Pattern</code>. This is subclassed where one would want to subclass a
+ * <code>String</code> to ensure that instances are always of a specific <code>Pattern</code>.
+ *
+ * @param <T>
+ */
 public abstract class ConstrainedString<T extends Comparable<T>> implements CharSequence, Comparable<ConstrainedString<T>> {
 
-    public ConstrainedString(final String value) {
+    /**
+     * Create a new <code>String</code> that satisfies the defined <code>Pattern</code>.
+     *
+     * @param value the <code>String</code>
+     * @throws IllegalArgumentException if the supplied <code>String</code> does not match the defined <code>Pattern</code>
+     */
+    protected ConstrainedString(final @NotNull String value) {
         check(Objects.requireNonNull(value));
     }
 
@@ -39,7 +51,7 @@ public abstract class ConstrainedString<T extends Comparable<T>> implements Char
         return Objects.hash(toString());
     }
 
-    private String check(final String s) {
+    private @NotNull String check(final @NotNull String s) {
         if (!pattern().matcher(s).matches()) {
             throw new IllegalArgumentException(String.format("invalid value '%s'", s));
         }

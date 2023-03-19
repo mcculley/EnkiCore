@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Wrap a <code>Connection</code>. This is intended as a convenience for subclasses that need to decorate/intercept calls on
@@ -38,7 +39,7 @@ public abstract class WrappedConnection implements Connection {
             value = "EI_EXPOSE_REP2",
             justification = "The wrapped Connection is necessarily exposed."
     )
-    protected WrappedConnection(final Connection wrapped) {
+    protected WrappedConnection(final @NotNull Connection wrapped) {
         this.wrapped = wrapped;
     }
 

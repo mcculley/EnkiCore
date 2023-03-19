@@ -2,6 +2,7 @@ package org.enki.sql;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -47,7 +48,7 @@ public class CachingConnection extends WrappedConnection {
      *
      * @param cached the <code>Connection</code> to cache
      */
-    public CachingConnection(final Connection cached) {
+    public CachingConnection(final @NotNull Connection cached) {
         super(cached);
     }
 
