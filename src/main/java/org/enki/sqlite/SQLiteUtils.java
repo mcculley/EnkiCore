@@ -1,6 +1,8 @@
 package org.enki.sqlite;
 
+import org.enki.core.ExcludeFromJacocoGeneratedReport;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
@@ -22,13 +24,23 @@ import java.util.regex.Pattern;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
-public class SQLiteUtils {
+/**
+ * Utilities for using SQLite.
+ */
+public final class SQLiteUtils {
 
+    @ExcludeFromJacocoGeneratedReport
     private SQLiteUtils() {
-        throw new AssertionError("instantiation of utility class");
+        throw new AssertionError("static utility class is not intended to be instantiated");
     }
 
-    public static void installRegExpFunction(final Connection connection) throws SQLException {
+    /**
+     * Install a REGEXP function in the SQLite environment that uses Java's regular expression implementation.
+     *
+     * @param connection a <code>Connection</code> to the session in which to install
+     * @throws SQLException if an error occurs
+     */
+    public static void installRegExpFunction(final @NotNull Connection connection) throws SQLException {
         Function.create(connection, "REGEXP", new Function() {
 
             @Override
@@ -43,17 +55,17 @@ public class SQLiteUtils {
         });
     }
 
-    public static void execute(final DSLContext c, final String s) {
+    public static void execute(final @NotNull DSLContext c, final @NotNull String s) {
         c.connection(connection -> execute(connection, s));
     }
 
-    public static void execute(final Connection c, final String s) throws SQLException {
+    public static void execute(final @NotNull Connection c, final @NotNull String s) throws SQLException {
         try (Statement t = c.createStatement()) {
             t.execute(s);
         }
     }
 
-    public static void executeCommands(final Connection connection, final String commands) throws SQLException {
+    public static void executeCommands(final @NotNull Connection connection, final @NotNull String commands) throws SQLException {
         final String[] commandsArray = commands.split(";");
         for (final String command : commandsArray) {
             final String trimmed = command.trim();
@@ -63,44 +75,44 @@ public class SQLiteUtils {
         }
     }
 
-    public static void setJournalMode(final DSLContext c, final String mode) {
+    public static void setJournalMode(final @NotNull DSLContext c, final @NotNull String mode) {
         execute(c, String.format("PRAGMA journal_mode = %s;", mode));
     }
 
-    public static void setUserVersion(final DSLContext c, final int version) throws SQLException {
+    public static void setUserVersion(final @NotNull DSLContext c, final int version) throws SQLException {
         execute(c, String.format("PRAGMA user_version = %d;", version));
     }
 
-    public static void vacuum(final DSLContext c) {
+    public static void vacuum(final @NotNull DSLContext c) {
         execute(c, "VACUUM;");
     }
 
-    public static void vacuum(final Connection c) throws SQLException {
+    public static void vacuum(final @NotNull Connection c) throws SQLException {
         execute(c, "VACUUM;");
     }
 
-    public static void analyze(final DSLContext c) {
+    public static void analyze(final @NotNull DSLContext c) {
         execute(c, "ANALYZE;");
     }
 
-    public static void analyze(final Connection c) throws SQLException {
+    public static void analyze(final @NotNull Connection c) throws SQLException {
         execute(c, "ANALYZE;");
     }
 
-    public static void optimize(final Connection c, final int analysisLimit) throws SQLException {
+    public static void optimize(final @NotNull Connection c, final int analysisLimit) throws SQLException {
         execute(c, String.format("PRAGMA analysis_limit = %d;", analysisLimit));
         execute(c, "PRAGMA optimize;");
     }
 
-    public static void optimize(final Connection c) throws SQLException {
+    public static void optimize(final @NotNull Connection c) throws SQLException {
         optimize(c, 0);
     }
 
-    public static void optimize(final DSLContext c, final int analysisLimit) throws SQLException {
+    public static void optimize(final @NotNull DSLContext c, final int analysisLimit) {
         c.connection(connection -> optimize(connection, analysisLimit));
     }
 
-    public static void optimize(final DSLContext c) throws SQLException {
+    public static void optimize(final @NotNull DSLContext c) throws SQLException {
         optimize(c, 0);
     }
 
@@ -110,7 +122,7 @@ public class SQLiteUtils {
         public final String index;
         public final String stat;
 
-        private Statistics1(final String table, final String index, final String stat) {
+        private Statistics1(final @NotNull String table, final @NotNull String index, final @NotNull String stat) {
             this.table = table;
             this.index = index;
             this.stat = stat;
@@ -118,7 +130,8 @@ public class SQLiteUtils {
 
     }
 
-    private static Collection<Statistics1> getStat1(final Connection c) {
+    @NotNull
+    private static Collection<Statistics1> getStat1(final @NotNull Connection c) {
         try (Statement s = c.createStatement()) {
             try (ResultSet rs = s.executeQuery("select * from sqlite_stat1")) {
                 final List<Statistics1> l = new ArrayList<>();
@@ -136,7 +149,8 @@ public class SQLiteUtils {
         }
     }
 
-    public static Collection<String> getLowQualityIndexes(final Connection c) throws SQLException {
+    @NotNull
+    public static Collection<String> getLowQualityIndexes(final @NotNull Connection c) throws SQLException {
         final Collection<Statistics1> statistics = getStat1(c);
         final List<String> l = new ArrayList<>();
         for (final Statistics1 s : statistics) {
@@ -157,7 +171,7 @@ public class SQLiteUtils {
         }
     }
 
-    public static boolean isSQLiteBusy(final Throwable t) {
+    public static boolean isSQLiteBusy(final @NotNull Throwable t) {
         if (t instanceof SQLiteException) {
             final SQLiteException se = (SQLiteException) t;
             return se.getResultCode().equals(SQLiteErrorCode.SQLITE_BUSY);
@@ -167,13 +181,15 @@ public class SQLiteUtils {
         }
     }
 
-    public static String getSchema(final Connection c, final String tableName) {
+    @Nullable
+    public static String getSchema(final @NotNull Connection c, final @NotNull String tableName) {
         final Field<String> sql = field("sql", String.class);
         return DSL.using(c).select(sql).from(table("sqlite_schema"))
                 .where(field("name", String.class).eq(tableName)).fetchOne(sql);
     }
 
-    public static Connection getConnection(final Path p) throws SQLException {
+    @NotNull
+    public static Connection getConnection(final @NotNull Path p) throws SQLException {
         final String u = "jdbc:sqlite:" + p;
         return DriverManager.getConnection(u);
     }
