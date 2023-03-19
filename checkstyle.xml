@@ -4,13 +4,17 @@
 <module name="Checker">
 
     <module name="TreeWalker">
+
         <module name="AvoidStarImport">
             <property name="severity" value="warning" />
         </module>
+
+        <module name="UnusedImports"/>
+
     </module>
 
     <module name="LineLength">
         <property name="max" value="132"/>
     </module>
- 
+
 </module>
