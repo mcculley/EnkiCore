@@ -21,15 +21,24 @@ import java.util.concurrent.Executor;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class WrappedConnection implements Connection {
+/**
+ * Wrap a <code>Connection</code>. This is intended as a convenience for subclasses that need to decorate/intercept calls on
+ * <code>Connection</code> objects.
+ */
+public abstract class WrappedConnection implements Connection {
 
     private final Connection wrapped;
 
+    /**
+     * Wrap a <code>Connection</code>.
+     *
+     * @param wrapped the <code>Connection to wrap</code>
+     */
     @SuppressFBWarnings(
             value = "EI_EXPOSE_REP2",
             justification = "The wrapped Connection is necessarily exposed."
     )
-    public WrappedConnection(final Connection wrapped) {
+    protected WrappedConnection(final Connection wrapped) {
         this.wrapped = wrapped;
     }
 

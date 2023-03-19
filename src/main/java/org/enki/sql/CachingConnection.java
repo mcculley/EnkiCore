@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * A WrappedConnection which caches queries.
+ */
 public class CachingConnection extends WrappedConnection {
 
     private final Cache<String, CachedResultSet> cache = Caffeine.newBuilder()
@@ -39,6 +42,11 @@ public class CachingConnection extends WrappedConnection {
             .maximumSize(1000)
             .build();
 
+    /**
+     * Create a new caching <code>Connection</code> using an existing <code>Connection</code> as the backing object.
+     *
+     * @param cached the <code>Connection</code> to cache
+     */
     public CachingConnection(final Connection cached) {
         super(cached);
     }

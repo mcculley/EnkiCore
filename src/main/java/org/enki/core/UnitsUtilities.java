@@ -6,6 +6,7 @@ import javax.measure.quantity.Speed;
 
 public class UnitsUtilities {
 
+    @ExcludeFromJacocoGeneratedReport
     private UnitsUtilities() {
         throw new AssertionError("static utility class is not intended to be instantiated");
     }
