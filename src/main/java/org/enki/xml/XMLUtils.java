@@ -187,7 +187,7 @@ public class XMLUtils {
      * @param validate <code>true</code> if the document should be validated
      * @return the parsed <code>Document</code>
      * @throws SAXException if there are any problems parsing the XML
-     * @throws IOException if any IO errors occur
+     * @throws IOException  if any IO errors occur
      */
     public static @NotNull Document parse(final @NotNull URL u, final boolean validate) throws SAXException, IOException {
         return parse(toURIUnchecked(u), validate);
@@ -216,7 +216,7 @@ public class XMLUtils {
      * @param i the resource identifier
      * @return the parsed document
      * @throws SAXException if the document did not parse
-     * @throws IOException if the resource could not be read
+     * @throws IOException  if the resource could not be read
      */
     public static Document parse(final URI i) throws SAXException, IOException {
         final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -235,7 +235,7 @@ public class XMLUtils {
      * @param validate <code>true</code> if the document should be validated
      * @return the parsed <code>Document</code>
      * @throws SAXException if there are any problems parsing the XML
-     * @throws IOException if any IO errors occur
+     * @throws IOException  if any IO errors occur
      */
     public static @NotNull Document parse(final @NotNull URI i, final boolean validate) throws SAXException, IOException {
         final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -276,7 +276,7 @@ public class XMLUtils {
      * @param validate <code>true</code> if the document should be validated
      * @return the parsed <code>Document</code>
      * @throws SAXException if there are any problems parsing the XML
-     * @throws IOException if any IO errors occur
+     * @throws IOException  if any IO errors occur
      */
     public static @NotNull Document parse(final @NotNull InputStream i, final boolean validate) throws SAXException, IOException {
         final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -446,7 +446,7 @@ public class XMLUtils {
      * @param l The NodeList
      * @return The stream
      */
-    public static Stream<Node> stream(final NodeList l) {
+    public static @NotNull Stream<Node> stream(final @NotNull NodeList l) {
         final int length = l.getLength();
         final AtomicInteger index = new AtomicInteger();
         return Stream.generate(() -> l.item(index.getAndIncrement())).limit(length);
@@ -458,7 +458,7 @@ public class XMLUtils {
      * @param nodeList the NodeList to iterate over
      * @return an Iterator that iterates over nodeList
      */
-    public static Iterator<Node> iterator(final NodeList nodeList) {
+    public static @NotNull Iterator<Node> iterator(final @NotNull NodeList nodeList) {
         return new AbstractIterator<>() {
 
             private int index;
@@ -481,7 +481,7 @@ public class XMLUtils {
      * @param nodeList the NodeList to iterate over
      * @return an Iterable that iterates over nodeList
      */
-    public static Iterable<Node> iterable(final NodeList nodeList) {
+    public static @NotNull Iterable<Node> iterable(final @NotNull NodeList nodeList) {
         return () -> iterator(nodeList);
     }
 
