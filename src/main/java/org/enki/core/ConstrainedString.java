@@ -5,8 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public abstract class ConstrainedString<T extends Comparable<T>>
-        implements CharSequence, Comparable<ConstrainedString<T>> {
+public abstract class ConstrainedString<T extends Comparable<T>> implements CharSequence, Comparable<ConstrainedString<T>> {
 
     public ConstrainedString(final String value) {
         check(Objects.requireNonNull(value));
@@ -50,6 +49,7 @@ public abstract class ConstrainedString<T extends Comparable<T>>
 
     protected abstract Pattern pattern();
 
+    @Override
     public int compareTo(@NotNull ConstrainedString<T> o) {
         return toString().compareTo(o.toString());
     }
