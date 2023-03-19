@@ -1,6 +1,9 @@
 package org.enki.xml;
 
 import com.google.common.base.Preconditions;
+import org.enki.core.ExcludeFromJacocoGeneratedReport;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -29,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -43,9 +47,14 @@ import java.util.stream.StreamSupport;
 
 public class XMLUtils {
 
+    @ExcludeFromJacocoGeneratedReport
     private XMLUtils() {
+        throw new AssertionError("static utility class is not intended to be instantiated");
     }
 
+    /**
+     * A very strict <code>ErrorHandler</code>. It immediately throws <code>AssertionError</code> for any problem encountered.
+     */
     public static final ErrorHandler strictErrorHandler = new ErrorHandler() {
 
         @Override
@@ -65,20 +74,40 @@ public class XMLUtils {
 
     };
 
-    public static String serialize(final Document doc) {
+    /**
+     * Serialize a <code>Document</code> to a <code>String</code> as XHTML and prepend the Unicode BOM.
+     *
+     * @param doc the <code>Document</code> to serialize
+     * @return the serialized <code>Document</code>
+     */
+    public static @NotNull String serialize(final @NotNull Document doc) {
         return serialize(doc, true, "xhtml");
     }
 
-    public static String serialize(final Document doc, final boolean prependBOM) {
+    /**
+     * Serialize a <code>Document</code> to a <code>String</code> as XHTML.
+     *
+     * @param doc        the <code>Document</code> to serialize
+     * @param prependBOM <code>true</code> if the Unicode BOM should be prepended
+     * @return the serialized <code>Document</code>
+     */
+    public static @NotNull String serialize(final @NotNull Document doc, final boolean prependBOM) {
         return serialize(doc, prependBOM, "xhtml");
     }
 
-    public static String serialize(final Document doc, final boolean prependBOM, final String method) {
+    /**
+     * Serialize a <code>Document</code> to a <code>String</code>.
+     *
+     * @param doc        the <code>Document</code> to serialize
+     * @param prependBOM <code>true</code> if the Unicode BOM should be prepended
+     * @param method     the method of serialization to use (e.g., "xhtml", "xml", "html", "text")
+     * @return the serialized <code>Document</code>
+     */
+    public static @NotNull String serialize(final @NotNull Document doc, final boolean prependBOM, final String method) {
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
             if (prependBOM) {
-                // FIXME: I have no idea why I need to prepend the UTF-8 BOM.
                 final int[] BYTE_ORDER_MARK = {239, 187, 191};
                 for (int i : BYTE_ORDER_MARK) {
                     baos.write((byte) i);
@@ -93,13 +122,18 @@ public class XMLUtils {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
             transformer.transform(new DOMSource(doc), new StreamResult(baos));
 
-            return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+            return baos.toString(StandardCharsets.UTF_8);
         } catch (final Exception e) {
             throw new AssertionError(e);
         }
     }
 
-    public static Document newDocument() {
+    /**
+     * Create a new empty <code>Document</code>.
+     *
+     * @return the new <code>Document</code>
+     */
+    public static @NotNull Document newDocument() {
         final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         try {
             final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -109,7 +143,13 @@ public class XMLUtils {
         }
     }
 
-    public static Document parse(final String s) {
+    /**
+     * Parse a <code>String</code> containing an XML document.
+     *
+     * @param s the <code>String</code> containing the XML document
+     * @return the parsed <code>Document</code>
+     */
+    public static @NotNull Document parse(final @NotNull String s) {
         final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         try {
             final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -119,7 +159,13 @@ public class XMLUtils {
         }
     }
 
-    public static URI toURIUnchecked(final URL u) {
+    /**
+     * Convert a URL to a URI, rethrowing any <code>URISyntaxException</code> as an <code>IllegalArgumentException</code>.
+     *
+     * @param u the URL to convert
+     * @return
+     */
+    public static @NotNull URI toURIUnchecked(final @NotNull URL u) {
         Preconditions.checkNotNull(u);
         try {
             return u.toURI();
@@ -128,19 +174,44 @@ public class XMLUtils {
         }
     }
 
-    public static Document parse(final URL u, final boolean validate) throws SAXException, IOException {
+    /**
+     * Parse an XML document at a URL.
+     *
+     * @param u        the URL of the document to parse
+     * @param validate <code>true</code> if the document should be validated
+     * @return the parsed <code>Document</code>
+     * @throws SAXException
+     * @throws IOException
+     */
+    public static @NotNull Document parse(final @NotNull URL u, final boolean validate) throws SAXException, IOException {
         return parse(toURIUnchecked(u), validate);
     }
 
-    public static Document parseUnchecked(final URI i, final boolean validate) {
+    /**
+     * Parse an XML document at a URI, rethrowing exceptions as runtime exceptions.
+     *
+     * @param i        the <code>URI</code> of the document
+     * @param validate <code>true</code> if the document should be validated
+     * @return the parsed <code>Document</code>
+     */
+    public static @NotNull Document parseUnchecked(final @NotNull URI i, final boolean validate) {
         try {
             return parse(i, validate);
-        } catch (final SAXException | IOException e) {
+        } catch (final SAXException e) {
             throw new RuntimeException(e);
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
-    public static Document parse(final URI i, final boolean validate) throws SAXException, IOException {
+    /**
+     * Parse an XML document at a URI.
+     *
+     * @param i        the <code>URI</code> of the document
+     * @param validate <code>true</code> if the document should be validated
+     * @return the parsed <code>Document</code>
+     */
+    public static @NotNull Document parse(final @NotNull URI i, final boolean validate) throws SAXException, IOException {
         final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         if (validate) {
             docFactory.setValidating(true);
@@ -155,15 +226,31 @@ public class XMLUtils {
         }
     }
 
-    public static Document parseUnchecked(final InputStream i, final boolean validate) {
+    /**
+     * Parse an XML document at from an <code>InputStream</code>, rethrowing exceptions as runtime exceptions.
+     *
+     * @param i        the <code>URI</code> of the document
+     * @param validate <code>true</code> if the document should be validated
+     * @return the parsed <code>Document</code>
+     */
+    public static @NotNull Document parseUnchecked(final @NotNull InputStream i, final boolean validate) {
         try {
             return parse(i, validate);
-        } catch (final SAXException | IOException e) {
+        } catch (final SAXException e) {
             throw new RuntimeException(e);
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
-    public static Document parse(final InputStream i, final boolean validate) throws SAXException, IOException {
+    /**
+     * Parse an XML document at from an <code>InputStream</code>.
+     *
+     * @param i        the <code>URI</code> of the document
+     * @param validate <code>true</code> if the document should be validated
+     * @return the parsed <code>Document</code>
+     */
+    public static @NotNull Document parse(final @NotNull InputStream i, final boolean validate) throws SAXException, IOException {
         final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         if (validate) {
             docFactory.setValidating(true);
@@ -178,21 +265,36 @@ public class XMLUtils {
         }
     }
 
-    public static Transformer loadTransformer(final URL templateURL) {
+    /**
+     * Load a <code>Transformer</code> from a supplied URL.
+     *
+     * @param templateURL the URL of the transform
+     * @return the parsed <code>Transformer</code>
+     */
+    public static @NotNull Transformer loadTransformer(final @NotNull URL templateURL) {
         try {
             final TransformerFactory factory = TransformerFactory.newInstance();
             final Source xslt = new StreamSource(templateURL.openStream());
             return factory.newTransformer(xslt);
-        } catch (final TransformerConfigurationException | IOException e) {
+        } catch (final TransformerConfigurationException e) {
             throw new RuntimeException(e);
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
-    public static Document transformToHTML(final URL templateURL, final Document document) {
+    /**
+     * Transform an XML document to HTML, using a supplied <code>Transformer</code>.
+     *
+     * @param templateURL the URL of the transform
+     * @param document    the XML <code>Document</code> to transform
+     * @return the transformed <code>Document</code>
+     */
+    public static @NotNull Document transformToHTML(final @NotNull URL templateURL, final @NotNull Document document) {
         return transformToHTML(loadTransformer(templateURL), document);
     }
 
-    public static Document transformToHTML(final Transformer transformer, final Document document) {
+    public static @NotNull Document transformToHTML(final @NotNull Transformer transformer, final @NotNull Document document) {
         try {
             final DOMResult outputResult = new DOMResult();
             transformer.setOutputProperty(OutputKeys.METHOD, "xhtml");
@@ -208,7 +310,14 @@ public class XMLUtils {
         }
     }
 
-    public static void writeDocumentToFile(final Document document, final File file) throws Exception {
+    /**
+     * Serialized a <code>Document</code> to a <code>File</code>.
+     *
+     * @param document the <code>Document</code> to serialize
+     * @param file     the <code>File</code> to write the serialized document to
+     * @throws TransformerException if there was an exception during serialization
+     */
+    public static void serialize(final @NotNull Document document, final @NotNull File file) throws TransformerException {
         final TransformerFactory tFactory = TransformerFactory.newInstance();
         final Transformer transformer = tFactory.newTransformer();
         final DOMSource source = new DOMSource(document);
@@ -216,15 +325,36 @@ public class XMLUtils {
         transformer.transform(source, result);
     }
 
-    public static <T> Iterable<T> iteratorToIterable(final Iterator<T> iterator) {
+    /**
+     * Get an <code>Iterable</code> for an <code>Iterator</code>.
+     *
+     * @param iterator the <code>Iterator</code>
+     * @param <T>      the element type
+     * @return an <code>Iterable</code> for for the <code>Iterator</code>
+     */
+    public static @NotNull <T> Iterable<T> iteratorToIterable(final @NotNull Iterator<T> iterator) {
         return () -> iterator;
     }
 
-    public static Iterable<Element> elementsByTagNameIterable(final Element e, final String name) {
+    /**
+     * Get an <code>Iterable</code> of child elements of an XML element of a given tag name.
+     *
+     * @param e    the <code>Element</code>
+     * @param name the tag name of the children
+     * @return an <code>Iterable</code> of the child elements
+     */
+    public static @NotNull Iterable<Element> elementsByTagNameIterable(final @NotNull Element e, final @NotNull String name) {
         return iteratorToIterable(elementsByTagNameIterator(e, name));
     }
 
-    private static Iterator<Element> elementsByTagNameIterator(final Element e, final String name) {
+    /**
+     * Get an <code>Iterator</code> of child elements of an XML element of a given tag name.
+     *
+     * @param e    the <code>Element</code>
+     * @param name the tag name of the children
+     * @return an <code>Iterator</code> of the child elements
+     */
+    private static @NotNull Iterator<Element> elementsByTagNameIterator(final @NotNull Element e, final @NotNull String name) {
         final NodeList nodes = e.getElementsByTagName(name);
         final int numNodes = nodes.getLength();
         return new Iterator<>() {
@@ -244,11 +374,25 @@ public class XMLUtils {
         };
     }
 
-    public static Stream<Element> getElementsByTagName(final Element e, final String name) {
+    /**
+     * Get a <code>Stream</code> of child elements of an XML element of a given tag name.
+     *
+     * @param e    the <code>Element</code>
+     * @param name the tag name of the children
+     * @return an <code>Stream</code> of the child elements
+     */
+    public static @NotNull Stream<Element> getElementsByTagName(final @NotNull Element e, final @NotNull String name) {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(elementsByTagNameIterator(e, name), 0), false);
     }
 
-    public static List<Attr> toList(final NamedNodeMap map) {
+    /**
+     * Turn a <code>NamedNodeMap</code> into a <code>List</code>. This is a convenience function for dealing with attributes. It
+     * returns an empty <code>List</code> if given <code>null</code>.
+     *
+     * @param map the <code>NamedNodeMap</code> of attributes
+     * @return a <code>List</code> of <code>Attr</code> objects
+     */
+    public static @NotNull List<Attr> toList(final @Nullable NamedNodeMap map) {
         if (map == null) {
             return Collections.emptyList();
         }
