@@ -99,7 +99,48 @@ public final class SQLiteUtils {
      * The journal mode for the database. See https://www.sqlite.org/pragma.html#pragma_journal_mode
      */
     public enum JournalMode {
-        DELETE, TRUNCATE, PERSIST, MEMORY, WAL, OFF
+
+        /**
+         * The DELETE journaling mode is the normal behavior. In the DELETE mode, the rollback journal is deleted at the conclusion
+         * of each transaction. Indeed, the delete operation is the action that causes the transaction to commit.
+         */
+        DELETE,
+
+        /**
+         * The TRUNCATE journaling mode commits transactions by truncating the rollback journal to zero-length instead of deleting
+         * it. On many systems, truncating a file is much faster than deleting the file since the containing directory does not need
+         * to be changed.
+         */
+        TRUNCATE,
+
+        /**
+         * The PERSIST journaling mode prevents the rollback journal from being deleted at the end of each transaction. Instead, the
+         * header of the journal is overwritten with zeros. This will prevent other database connections from rolling the journal
+         * back. The PERSIST journaling mode is useful as an optimization on platforms where deleting or truncating a file is much
+         * more expensive than overwriting the first block of a file with zeros.
+         */
+        PERSIST,
+
+        /**
+         * The MEMORY journaling mode stores the rollback journal in volatile RAM. This saves disk I/O but at the expense of
+         * database safety and integrity. If the application using SQLite crashes in the middle of a transaction when the MEMORY
+         * journaling mode is set, then the database file will very likely go corrupt.
+         */
+        MEMORY,
+
+        /**
+         * The WAL journaling mode uses a write-ahead log instead of a rollback journal to implement transactions. The WAL
+         * journaling mode is persistent; after being set it stays in effect across multiple database connections and after closing
+         * and reopening the database.
+         */
+        WAL,
+
+        /**
+         * The OFF journaling mode disables the rollback journal completely. No rollback journal is ever created and hence there is
+         * never a rollback journal to delete. The OFF journaling mode disables the atomic commit and rollback capabilities of
+         * SQLite.
+         */
+        OFF
     }
 
     /**
@@ -130,44 +171,90 @@ public final class SQLiteUtils {
     /**
      * Set the user version of the database
      *
-     * @param c       the contenxt
+     * @param c       the Connection
      * @param version the version
      * @throws SQLException if an error occurs
      */
-    public static void setUserVersion(final @NotNull DSLContext c, final int version) throws SQLException {
+    public static void setUserVersion(final @NotNull Connection c, final int version) throws SQLException {
         execute(c, String.format("PRAGMA user_version = %d;", version));
     }
 
+    /**
+     * Vacuum the database.
+     *
+     * @param c the context
+     */
     public static void vacuum(final @NotNull DSLContext c) {
         execute(c, "VACUUM;");
     }
 
+    /**
+     * Vacuum the database.
+     *
+     * @param c the Connection
+     * @throws SQLException if an error occurs
+     */
     public static void vacuum(final @NotNull Connection c) throws SQLException {
         execute(c, "VACUUM;");
     }
 
+    /**
+     * Analyze the database.
+     *
+     * @param c the context
+     */
     public static void analyze(final @NotNull DSLContext c) {
         execute(c, "ANALYZE;");
     }
 
+    /**
+     * Analyze the database.
+     *
+     * @param c the Connection
+     * @throws SQLException if an error occurs
+     */
     public static void analyze(final @NotNull Connection c) throws SQLException {
         execute(c, "ANALYZE;");
     }
 
+    /**
+     * Optimize the database.
+     *
+     * @param c             the Connection
+     * @param analysisLimit the analysis_limit
+     * @throws SQLException if an error occurs
+     */
     public static void optimize(final @NotNull Connection c, final int analysisLimit) throws SQLException {
         execute(c, String.format("PRAGMA analysis_limit = %d;", analysisLimit));
         execute(c, "PRAGMA optimize;");
     }
 
+    /**
+     * Optimize the database.
+     *
+     * @param c the Connection
+     * @throws SQLException if an error occurs
+     */
     public static void optimize(final @NotNull Connection c) throws SQLException {
         optimize(c, 0);
     }
 
+    /**
+     * Optimize the database.
+     *
+     * @param c             the context
+     * @param analysisLimit the analysis_limit
+     */
     public static void optimize(final @NotNull DSLContext c, final int analysisLimit) {
         c.connection(connection -> optimize(connection, analysisLimit));
     }
 
-    public static void optimize(final @NotNull DSLContext c) throws SQLException {
+    /**
+     * Optimize the database.
+     *
+     * @param c the context
+     */
+    public static void optimize(final @NotNull DSLContext c) {
         optimize(c, 0);
     }
 
@@ -209,10 +296,9 @@ public final class SQLiteUtils {
      *
      * @param c the <code>Connection</code>
      * @return a Collection of index names
-     * @throws SQLException if any error occurs
      */
     @NotNull
-    public static Collection<String> getLowQualityIndexes(final @NotNull Connection c) throws SQLException {
+    public static Collection<String> getLowQualityIndexes(final @NotNull Connection c) {
         final Collection<Statistics1> statistics = getStat1(c);
         final List<String> l = new ArrayList<>();
         for (final Statistics1 s : statistics) {

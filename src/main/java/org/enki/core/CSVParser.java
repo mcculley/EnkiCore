@@ -29,10 +29,18 @@ public final class CSVParser<T> implements Function<String[], T> {
         return parse(s);
     }
 
+    /**
+     * A column type. Use this to annotate columns in the target type.
+     */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.PARAMETER)
     public @interface Column {
 
+        /**
+         * Get the value for this column in the supplied row.
+         *
+         * @return the value, as a string
+         */
         String value();
 
     }
@@ -93,6 +101,11 @@ public final class CSVParser<T> implements Function<String[], T> {
         parsersByType.putAll(typeParsers);
     }
 
+    /**
+     * A Builder for CSVParser, using the fluent style.
+     *
+     * @param <T> the row type
+     */
     public static class Builder<T> {
 
         private final Class<T> c;
@@ -100,21 +113,44 @@ public final class CSVParser<T> implements Function<String[], T> {
         private final Map<Class<?>, Function<String, Object>> typeParsers = new HashMap<>();
         private final Map<String, Function<String, Object>> columnParsers = new HashMap<>();
 
+        /**
+         * Create a new Builder.
+         *
+         * @param c      the class to parse
+         * @param header the header line
+         */
         public Builder(final @NotNull Class<T> c, final @NotNull String[] header) {
             this.c = c;
             this.header = header.clone();
         }
 
+        /**
+         * Use the supplied type parsers.
+         *
+         * @param typeParsers parsers for types
+         * @return the Builder instance
+         */
         public Builder<T> withTypeParsers(final @NotNull Map<Class<?>, Function<String, Object>> typeParsers) {
             this.typeParsers.putAll(typeParsers);
             return this;
         }
 
+        /**
+         * Use the supplied column parsers.
+         *
+         * @param columnParsers parsers for columns
+         * @return the Builder instance
+         */
         public Builder<T> withColumnParsers(final @NotNull Map<String, Function<String, Object>> columnParsers) {
             this.columnParsers.putAll(columnParsers);
             return this;
         }
 
+        /**
+         * Build the parser.
+         *
+         * @return the completed parser.
+         */
         public CSVParser<T> build() {
             return new CSVParser<>(c, header, typeParsers, columnParsers);
         }

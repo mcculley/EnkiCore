@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * A <code>String</code> that matches a defined <code>Pattern</code>. This is subclassed where one would want to subclass a
  * <code>String</code> to ensure that instances are always of a specific <code>Pattern</code>.
  *
- * @param <T>
+ * @param <T> the type of the subclass, which must extend <code>Comparable</code>
  */
 public abstract class ConstrainedString<T extends Comparable<T>> implements CharSequence, Comparable<ConstrainedString<T>> {
 
@@ -59,6 +59,11 @@ public abstract class ConstrainedString<T extends Comparable<T>> implements Char
         return s;
     }
 
+    /**
+     * The pattern to be matched against.
+     *
+     * @return the <code>Pattern</code>
+     */
     protected abstract Pattern pattern();
 
     @Override

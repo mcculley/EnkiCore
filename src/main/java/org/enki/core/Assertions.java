@@ -51,7 +51,7 @@ public final class Assertions {
 
     /**
      * Determine if assertions are enabled.
-     * @return
+     * @return <code>true</code> if assertions are enabled
      */
     public static boolean assertionsEnabled() {
         return Assertions.class.desiredAssertionStatus();

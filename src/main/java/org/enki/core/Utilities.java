@@ -115,6 +115,12 @@ public class Utilities {
         return Duration.ofNanos(System.nanoTime() - start);
     }
 
+    /**
+     * Given a byte, render it to a 2 digit hexadecimal String.
+     *
+     * @param x the byte
+     * @return the byte as a 2 digit hexadecimal string.
+     */
     public static @NotNull String to2DigitHexString(final byte x) {
         final String s = Integer.toHexString(x & 0xFF);
         return s.length() == 1 ? "0" + s : s;

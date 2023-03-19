@@ -12,6 +12,9 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+/**
+ * Utilities for Collections.
+ */
 public class Collections {
 
     @ExcludeFromJacocoGeneratedReport

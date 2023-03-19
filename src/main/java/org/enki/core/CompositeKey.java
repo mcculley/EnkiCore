@@ -11,12 +11,15 @@ import java.util.Objects;
  */
 public class CompositeKey {
 
+    /**
+     * The components, which must be immutable.
+     */
     public final Object[] components;
 
     /**
-     * Create a new CompositeKey
+     * Create a new CompositeKey.
      *
-     * @param components the component objects
+     * @param components the component objects. These must be immutable.
      */
     public CompositeKey(@Nonnull final Object[] components) {
         this.components = Objects.requireNonNull(components);
