@@ -62,7 +62,7 @@ public class JsoupUtilities {
      * @return the {@link org.jsoup.Connection.Response Response} if successful
      * @throws IOException if anything goes wrong during the execution
      */
-    public static Connection.Response executeWithRetry(final @NotNull  Connection connection) throws IOException {
+    public static Connection.Response executeWithRetry(final @NotNull Connection connection) throws IOException {
         return executeWithRetry(connection, 3);
     }
 
