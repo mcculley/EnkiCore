@@ -24,6 +24,8 @@ package org.enki.core;
  * THE SOFTWARE.
  */
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
@@ -32,18 +34,37 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
-public class Resources {
+/**
+ * Convenience utilities for working with resources.
+ */
+public final class Resources {
 
+    @ExcludeFromJacocoGeneratedReport
     private Resources() {
         throw new AssertionError("static utility class is not intended to be instantiated");
     }
 
-    public static List<String> readLinesUnchecked(final URL resource) {
+    /**
+     * Gets the lines from a resource as a List of String objects, assuming UTF-8 as the character set.
+     *
+     * @param resource the resource to load
+     * @return a List of String objects parsed from the resource
+     */
+    @NotNull
+    public static List<String> readLinesUnchecked(final @NotNull URL resource) {
         Objects.requireNonNull(resource);
         return readLinesUnchecked(resource, StandardCharsets.UTF_8);
     }
 
-    public static List<String> readLinesUnchecked(final URL resource, final Charset charset) {
+    /**
+     * Gets the lines from a resource as a List of String objects.
+     *
+     * @param resource the resource to load
+     * @param charset the character set to use when parsing
+     * @return a List of String objects parsed from the resource
+     */
+    @NotNull
+    public static List<String> readLinesUnchecked(final @NotNull URL resource, final @NotNull Charset charset) {
         Objects.requireNonNull(resource);
         Objects.requireNonNull(charset);
         try {

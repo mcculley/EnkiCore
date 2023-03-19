@@ -24,13 +24,27 @@ package org.enki.core;
  * THE SOFTWARE.
  */
 
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Utilities for dealing with enums.
+ */
 public class Enums {
 
+    @ExcludeFromJacocoGeneratedReport
     private Enums() {
         throw new AssertionError("static utility class is not intended to be instantiated");
     }
 
-    public static <T extends Enum<T>> T next(final T t) {
+    /**
+     * Given an instance of an enum value, find the next value, rotating to the beginning if necessary.
+     *
+     * @param t   the enum value
+     * @param <T> the enum type
+     * @return the next value
+     */
+    @NotNull
+    public static <T extends Enum<T>> T next(final @NotNull T t) {
         final int index = t.ordinal();
         final Enum<T>[] constants = t.getClass().getEnumConstants();
         if (index == constants.length - 1) {
@@ -40,7 +54,15 @@ public class Enums {
         }
     }
 
-    public static <T extends Enum<T>> T prev(final T t) {
+    /**
+     * Given an instance of an enum value, find the previous value, rotating to the end if necessary.
+     *
+     * @param t   the enum value
+     * @param <T> the enum type
+     * @return the previous value
+     */
+    @NotNull
+    public static <T extends Enum<T>> T prev(final @NotNull T t) {
         final int index = t.ordinal();
         final Enum<T>[] constants = t.getClass().getEnumConstants();
         if (index == 0) {

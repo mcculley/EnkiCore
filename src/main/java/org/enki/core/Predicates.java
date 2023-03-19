@@ -24,19 +24,40 @@ package org.enki.core;
  * THE SOFTWARE.
  */
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+/**
+ * Utilities for working with Predicates.
+ */
 public class Predicates {
 
+    @ExcludeFromJacocoGeneratedReport
     private Predicates() {
         throw new AssertionError("static utility class is not intended to be instantiated");
     }
 
-    public static <T> Predicate<T> and(final Stream<Predicate<T>> s) {
+    /**
+     * Create a Predicate that ands multiple Predicates together
+     *
+     * @param s   a Stream of Predicate objects
+     * @param <T> the type
+     * @return a composite Predicate that ands all supplied predicates together.
+     */
+    @NotNull
+    public static <T> Predicate<T> and(final @NotNull Stream<Predicate<T>> s) {
         return s.reduce(alwaysTrue(), Predicate::and);
     }
 
+    /**
+     * A Predicate that always returns <code>true</code>.
+     *
+     * @param <T> the type of the Predicate
+     * @return a Predicate that always returns <code>true</code>
+     */
+    @NotNull
     public static <T> Predicate<T> alwaysTrue() {
         return s -> true;
     }

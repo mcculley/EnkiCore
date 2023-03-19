@@ -6,10 +6,18 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * A key that can be used in hashmaps that is composed of multiple objects.
+ */
 public class CompositeKey {
 
     public final Object[] components;
 
+    /**
+     * Create a new CompositeKey
+     *
+     * @param components the component objects
+     */
     public CompositeKey(@Nonnull final Object[] components) {
         this.components = Objects.requireNonNull(components);
         Preconditions.checkArgument(components.length > 0, "must have components");
@@ -30,7 +38,7 @@ public class CompositeKey {
 
     @Override
     public String toString() {
-        return "CompositeKey{components=" + Arrays.toString(components) + '}';
+        return Arrays.toString(components);
     }
 
 }

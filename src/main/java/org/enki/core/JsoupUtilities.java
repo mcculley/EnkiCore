@@ -25,6 +25,7 @@ package org.enki.core;
  */
 
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 
@@ -59,7 +60,7 @@ public class JsoupUtilities {
      * @return the {@link org.jsoup.Connection.Response Response} if successful
      * @throws IOException if anything goes wrong during the execution
      */
-    public static Connection.Response executeWithRetry(final Connection connection) throws IOException {
+    public static Connection.Response executeWithRetry(final @NotNull  Connection connection) throws IOException {
         return executeWithRetry(connection, 3);
     }
 
@@ -71,7 +72,8 @@ public class JsoupUtilities {
      * @return the {@link org.jsoup.Connection.Response Response} if successful
      * @throws IOException if anything goes wrong during the execution
      */
-    public static Connection.Response executeWithRetry(final Connection connection, final int numRetries)
+    @NotNull
+    public static Connection.Response executeWithRetry(final @NotNull Connection connection, final int numRetries)
             throws IOException {
         Objects.requireNonNull(connection);
         Preconditions.checkArgument(numRetries >= 1);

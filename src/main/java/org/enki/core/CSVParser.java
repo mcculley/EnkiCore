@@ -2,6 +2,7 @@ package org.enki.core;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -15,10 +16,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class CSVParser<T> implements Function<String[], T> {
+/**
+ * A parser for CSV files in the form of a function that converts a line into a row type.
+ *
+ * @param <T> the type for each row
+ */
+public final class CSVParser<T> implements Function<String[], T> {
 
+    @NotNull
     @Override
-    public T apply(final String[] s) {
+    public T apply(final @NotNull String[] s) {
         return parse(s);
     }
 
@@ -56,7 +63,13 @@ public class CSVParser<T> implements Function<String[], T> {
         parsersByType.put(LocalDate.class, LocalDate::parse);
     }
 
-    public CSVParser(final Class<T> c, final String[] header) {
+    /**
+     * Create a new CSVParser.
+     *
+     * @param c      the class for the row type
+     * @param header the header line
+     */
+    public CSVParser(final @NotNull Class<T> c, final @NotNull String[] header) {
         this.c = c;
         this.headerIndices = parseHeader(header);
         constructor = c.getConstructors()[0];
@@ -64,9 +77,17 @@ public class CSVParser<T> implements Function<String[], T> {
         parameterTypes = constructor.getParameterTypes();
     }
 
-    public CSVParser(final Class<T> c, final String[] header,
-                     final Map<Class<?>, Function<String, Object>> typeParsers,
-                     final Map<String, Function<String, Object>> columnParsers) {
+    /**
+     * Create a new CSVParser.
+     *
+     * @param c             the class for the row type
+     * @param header        the header line
+     * @param typeParsers   the type parsers
+     * @param columnParsers the column parsers
+     */
+    public CSVParser(final @NotNull Class<T> c, final @NotNull String[] header,
+                     final @NotNull Map<Class<?>, Function<String, Object>> typeParsers,
+                     final @NotNull Map<String, Function<String, Object>> columnParsers) {
         this(c, header);
         parsersByColumn.putAll(columnParsers);
         parsersByType.putAll(typeParsers);
@@ -79,17 +100,17 @@ public class CSVParser<T> implements Function<String[], T> {
         private final Map<Class<?>, Function<String, Object>> typeParsers = new HashMap<>();
         private final Map<String, Function<String, Object>> columnParsers = new HashMap<>();
 
-        public Builder(final Class<T> c, final String[] header) {
+        public Builder(final @NotNull Class<T> c, final @NotNull String[] header) {
             this.c = c;
             this.header = header.clone();
         }
 
-        public Builder<T> withTypeParsers(final Map<Class<?>, Function<String, Object>> typeParsers) {
+        public Builder<T> withTypeParsers(final @NotNull Map<Class<?>, Function<String, Object>> typeParsers) {
             this.typeParsers.putAll(typeParsers);
             return this;
         }
 
-        public Builder<T> withColumnParsers(final Map<String, Function<String, Object>> columnParsers) {
+        public Builder<T> withColumnParsers(final @NotNull Map<String, Function<String, Object>> columnParsers) {
             this.columnParsers.putAll(columnParsers);
             return this;
         }

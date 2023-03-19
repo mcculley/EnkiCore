@@ -1,9 +1,14 @@
 package org.enki.core;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
 
+/**
+ * Utilities for use with the Units API.
+ */
 public class UnitsUtilities {
 
     @ExcludeFromJacocoGeneratedReport
@@ -11,8 +16,18 @@ public class UnitsUtilities {
         throw new AssertionError("static utility class is not intended to be instantiated");
     }
 
-    // FIXME: This seems hokey. There should be a better way.
-    public static <C extends Quantity<C>> boolean isOfType(final Quantity<?> q, final Class<C> c) {
+    /**
+     * Determine if a quantity type is of a particular type.
+     * <p>
+     * This is necessary because the design of the Units API does not make this possible at compile-time.
+     *
+     * @param q   the <code>Quantity</code> to test
+     * @param c   the <code>Quantity</code> type to test against
+     * @param <C> the <code>Quantity</code> type to test against
+     * @return <code>true</code> if q is of type c
+     */
+    public static <C extends Quantity<C>> boolean isOfType(final @NotNull Quantity<?> q, @NotNull final Class<C> c) {
+        // FIXME: This seems hokey. There should be a better way.
         if (q == null) {
             return false;
         }
@@ -25,11 +40,23 @@ public class UnitsUtilities {
         }
     }
 
-    public static boolean isSpeed(final Quantity<?> q) {
+    /**
+     * Determine if a value is a speed.
+     *
+     * @param q the value to test
+     * @return <code>true</code> if the value is a speed
+     */
+    public static boolean isSpeed(final @NotNull Quantity<?> q) {
         return isOfType(q, Speed.class);
     }
 
-    public static boolean isLength(final Quantity<?> q) {
+    /**
+     * Determine if a value is a length.
+     *
+     * @param q the value to test
+     * @return <code>true</code> if the value is a length
+     */
+    public static boolean isLength(final @NotNull Quantity<?> q) {
         return isOfType(q, Length.class);
     }
 

@@ -13,8 +13,12 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Duration;
 import java.time.Instant;
 
+/**
+ * Some utilities for caching resources found on the net.
+ */
 public class CacheUtilities {
 
+    @ExcludeFromJacocoGeneratedReport
     private CacheUtilities() {
         throw new AssertionError("static utility class is not intended to be instantiated");
     }
@@ -33,6 +37,13 @@ public class CacheUtilities {
         return buf.toString();
     }
 
+    /**
+     * Gets an InputStream for a supplied URL with default caching parameters.
+     *
+     * @param l the URL to fetch
+     * @return an InputStream for the resource or a cached copy of it
+     * @throws IOException if any IO errors occur
+     */
     public static InputStream openCachedURL(final URL l) throws IOException {
         final File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         final File cachedFile = new File(tmpDir, makeFileName(l));
