@@ -55,16 +55,36 @@ public final class SQLiteUtils {
         });
     }
 
+    /**
+     * Execute a statement.
+     *
+     * @param c the context
+     * @param s the statement
+     */
     public static void execute(final @NotNull DSLContext c, final @NotNull String s) {
         c.connection(connection -> execute(connection, s));
     }
 
+    /**
+     * Execute a statement.
+     *
+     * @param c the <code>Connection</code>
+     * @param s the statement
+     * @throws SQLException if any error occurs
+     */
     public static void execute(final @NotNull Connection c, final @NotNull String s) throws SQLException {
         try (Statement t = c.createStatement()) {
             t.execute(s);
         }
     }
 
+    /**
+     * Execute a series of statements supplied in a <code>String</code>.
+     *
+     * @param connection the <code>Connection</code>
+     * @param commands   the commands
+     * @throws SQLException if any error occurs
+     */
     public static void executeCommands(final @NotNull Connection connection, final @NotNull String commands) throws SQLException {
         final String[] commandsArray = commands.split(";");
         for (final String command : commandsArray) {
@@ -75,10 +95,45 @@ public final class SQLiteUtils {
         }
     }
 
-    public static void setJournalMode(final @NotNull DSLContext c, final @NotNull String mode) {
-        execute(c, String.format("PRAGMA journal_mode = %s;", mode));
+    /**
+     * The journal mode for the database. See https://www.sqlite.org/pragma.html#pragma_journal_mode
+     */
+    public enum JournalMode {
+        DELETE, TRUNCATE, PERSIST, MEMORY, WAL, OFF
     }
 
+    /**
+     * Set the journal mode for the database.
+     *
+     * @param c    the context
+     * @param mode the journal mode
+     */
+    public static void setJournalMode(final @NotNull DSLContext c, final @NotNull JournalMode mode) {
+        execute(c, String.format("PRAGMA journal_mode = %s;", mode.name()));
+    }
+
+    /**
+     * Get the user version of the database.
+     *
+     * @param c the connection
+     * @return the user version
+     * @throws SQLException if an error occurs
+     */
+    public static int getUserVersion(@NotNull final Connection c) throws SQLException {
+        try (Statement s = c.createStatement()) {
+            try (ResultSet r = s.executeQuery("PRAGMA user_version;")) {
+                return r.getInt(1);
+            }
+        }
+    }
+
+    /**
+     * Set the user version of the database
+     *
+     * @param c       the contenxt
+     * @param version the version
+     * @throws SQLException if an error occurs
+     */
     public static void setUserVersion(final @NotNull DSLContext c, final int version) throws SQLException {
         execute(c, String.format("PRAGMA user_version = %d;", version));
     }
@@ -149,6 +204,13 @@ public final class SQLiteUtils {
         }
     }
 
+    /**
+     * Get a list of indexes that are low quality.
+     *
+     * @param c the <code>Connection</code>
+     * @return a Collection of index names
+     * @throws SQLException if any error occurs
+     */
     @NotNull
     public static Collection<String> getLowQualityIndexes(final @NotNull Connection c) throws SQLException {
         final Collection<Statistics1> statistics = getStat1(c);
@@ -163,14 +225,12 @@ public final class SQLiteUtils {
         return l;
     }
 
-    public static int getUserVersion(@NotNull final Connection c) throws SQLException {
-        try (Statement s = c.createStatement()) {
-            try (ResultSet r = s.executeQuery("PRAGMA user_version;")) {
-                return r.getInt(1);
-            }
-        }
-    }
-
+    /**
+     * Determine if an exception is a result of the SQLite database being used by other processes or connections.
+     *
+     * @param t the exception to test
+     * @return <code>true</code> if this exception or any nested exception is an SQLite busy exception.
+     */
     public static boolean isSQLiteBusy(final @NotNull Throwable t) {
         if (t instanceof SQLiteException) {
             final SQLiteException se = (SQLiteException) t;
@@ -181,6 +241,13 @@ public final class SQLiteUtils {
         }
     }
 
+    /**
+     * Get the schema for a table.
+     *
+     * @param c         the <code>Connection</code>
+     * @param tableName the table name
+     * @return the schema for the table or <code>null</code>
+     */
     @Nullable
     public static String getSchema(final @NotNull Connection c, final @NotNull String tableName) {
         final Field<String> sql = field("sql", String.class);
@@ -188,6 +255,13 @@ public final class SQLiteUtils {
                 .where(field("name", String.class).eq(tableName)).fetchOne(sql);
     }
 
+    /**
+     * Make a Connection for a supplied file.
+     *
+     * @param p the path to the file
+     * @return the <code>Connection</code>
+     * @throws SQLException if an error occurs
+     */
     @NotNull
     public static Connection getConnection(final @NotNull Path p) throws SQLException {
         final String u = "jdbc:sqlite:" + p;
