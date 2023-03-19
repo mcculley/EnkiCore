@@ -1,4 +1,4 @@
-package org.enki.sql;
+package org.enki.sqlite;
 
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
