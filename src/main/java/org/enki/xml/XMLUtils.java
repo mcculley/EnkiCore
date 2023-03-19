@@ -1,6 +1,7 @@
 package org.enki.xml;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.AbstractIterator;
 import org.enki.core.ExcludeFromJacocoGeneratedReport;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,6 +9,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -42,6 +44,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -204,6 +207,24 @@ public class XMLUtils {
             throw new RuntimeException(e);
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    /**
+     * Do the simplest possible parsing of an XML document from a resource.
+     *
+     * @param i the resource identifier
+     * @return the parsed document
+     * @throws SAXException if the document did not parse
+     * @throws IOException if the resource could not be read
+     */
+    public static Document parse(final URI i) throws SAXException, IOException {
+        final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        try {
+            final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            return docBuilder.parse(i.toString());
+        } catch (final ParserConfigurationException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -417,6 +438,51 @@ public class XMLUtils {
         }
 
         return list;
+    }
+
+    /**
+     * Create a Stream of Node objects from a NodeList.
+     *
+     * @param l The NodeList
+     * @return The stream
+     */
+    public static Stream<Node> stream(final NodeList l) {
+        final int length = l.getLength();
+        final AtomicInteger index = new AtomicInteger();
+        return Stream.generate(() -> l.item(index.getAndIncrement())).limit(length);
+    }
+
+    /**
+     * Get a view of a NodeList as an Iterator.
+     *
+     * @param nodeList the NodeList to iterate over
+     * @return an Iterator that iterates over nodeList
+     */
+    public static Iterator<Node> iterator(final NodeList nodeList) {
+        return new AbstractIterator<>() {
+
+            private int index;
+
+            @Override
+            protected Node computeNext() {
+                if (index == nodeList.getLength()) {
+                    return endOfData();
+                }
+
+                return nodeList.item(index++);
+            }
+
+        };
+    }
+
+    /**
+     * Get a view of a NodeList as an Iterable.
+     *
+     * @param nodeList the NodeList to iterate over
+     * @return an Iterable that iterates over nodeList
+     */
+    public static Iterable<Node> iterable(final NodeList nodeList) {
+        return () -> iterator(nodeList);
     }
 
 }
