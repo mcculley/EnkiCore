@@ -64,6 +64,7 @@ public abstract class ConstrainedString<T extends Comparable<T>> implements Char
      *
      * @return the <code>Pattern</code>
      */
+    @NotNull
     protected abstract Pattern pattern();
 
     @Override
