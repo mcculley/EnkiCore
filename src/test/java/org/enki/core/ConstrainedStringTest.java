@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConstrainedStringTest {
 
-    private static class CallSign extends ConstrainedString<CallSign> {
+    private static class CallSign extends RegularExpressionConstrainedString<CallSign> {
 
         @NotNull
         private final String sign;

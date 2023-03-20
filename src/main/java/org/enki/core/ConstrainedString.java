@@ -3,11 +3,10 @@ package org.enki.core;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 /**
- * A <code>String</code> that matches a defined <code>Pattern</code>. This is subclassed where one would want to subclass a
- * <code>String</code> to ensure that instances are always of a specific <code>Pattern</code>.
+ * A <code>String</code> that has some constraint. This is subclassed where one would want to subclass a
+ * <code>String</code> to ensure that instances always satisfy a constraint without passing around just a bare String object.
  * <p>
  * In many cases, calling code will want to call toString() to get the actual String, but as this class implements CharSequence
  * using toString(), instances can be passed directly where CharSequence is accepted.
@@ -44,6 +43,9 @@ public abstract class ConstrainedString<T> implements CharSequence, Comparable<T
         return toString().subSequence(start, end);
     }
 
+    @NotNull
+    protected abstract String check(final @NotNull String s);
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -55,22 +57,6 @@ public abstract class ConstrainedString<T> implements CharSequence, Comparable<T
     public int hashCode() {
         return Objects.hash(toString());
     }
-
-    private @NotNull String check(final @NotNull String s) {
-        if (!pattern().matcher(s).matches()) {
-            throw new IllegalArgumentException(String.format("invalid value '%s'", s));
-        }
-
-        return s;
-    }
-
-    /**
-     * The pattern to be matched against.
-     *
-     * @return the <code>Pattern</code>
-     */
-    @NotNull
-    protected abstract Pattern pattern();
 
     @Override
     public int compareTo(@NotNull T o) {
