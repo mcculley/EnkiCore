@@ -9,9 +9,9 @@ import java.util.regex.Pattern;
  * A <code>String</code> that matches a defined <code>Pattern</code>. This is subclassed where one would want to subclass a
  * <code>String</code> to ensure that instances are always of a specific <code>Pattern</code>.
  *
- * @param <T> the type of the subclass, which must extend <code>Comparable</code>
+ * @param <T> the type of the subclass, which is necessary for the Comparable bound to work.
  */
-public abstract class ConstrainedString<T extends Comparable<T>> implements CharSequence, Comparable<ConstrainedString<T>> {
+public abstract class ConstrainedString<T> implements CharSequence, Comparable<T> {
 
     /**
      * Create a new <code>String</code> that satisfies the defined <code>Pattern</code>.
@@ -68,7 +68,7 @@ public abstract class ConstrainedString<T extends Comparable<T>> implements Char
     protected abstract Pattern pattern();
 
     @Override
-    public int compareTo(@NotNull ConstrainedString<T> o) {
+    public int compareTo(@NotNull T o) {
         return toString().compareTo(o.toString());
     }
 

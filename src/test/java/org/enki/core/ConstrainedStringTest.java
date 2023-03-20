@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConstrainedStringTest {
 
-    private static class CallSign extends ConstrainedString {
+    private static class CallSign extends ConstrainedString<CallSign> {
 
         @NotNull
         private final String sign;
@@ -44,7 +44,7 @@ public class ConstrainedStringTest {
         assertEquals(new CallSign("WDC4444"), new CallSign("WDC4444"));
         assertNotEquals(new CallSign("K4444"), new CallSign("WDC4444"));
         assertTrue(new CallSign("K4444").compareTo(new CallSign("WDC4444")) < 0);
-        assertThrows(IllegalArgumentException.class, () -> new CallSign(null));
+        assertThrows(NullPointerException.class, () -> new CallSign(null));
         assertThrows(IllegalArgumentException.class, () -> new CallSign("@"));
         assertThrows(IllegalArgumentException.class, () -> new CallSign("a-3"));
         assertThrows(IllegalArgumentException.class, () -> new CallSign("a25491182"));
