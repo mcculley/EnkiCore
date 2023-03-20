@@ -23,12 +23,8 @@ public abstract class RegularExpressionConstrainedString<T> extends ConstrainedS
 
     @NotNull
     @Override
-    protected String check(final @NotNull String s) {
-        if (!pattern().matcher(s).matches()) {
-            throw new IllegalArgumentException(String.format("invalid value '%s'", s));
-        }
-
-        return s;
+    protected boolean valid(final @NotNull String s) {
+        return pattern().matcher(s).matches();
     }
 
     /**

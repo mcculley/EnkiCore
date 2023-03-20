@@ -24,7 +24,9 @@ public abstract class ConstrainedString<T> implements CharSequence, Comparable<T
      * @throws IllegalArgumentException if the supplied <code>String</code> does not match the defined <code>Pattern</code>
      */
     protected ConstrainedString(final @NotNull String value) {
-        check(Objects.requireNonNull(value));
+        if (!valid(Objects.requireNonNull(value))) {
+            throw new IllegalArgumentException(String.format("invalid value '%s'", value));
+        }
     }
 
     @Override
@@ -44,7 +46,7 @@ public abstract class ConstrainedString<T> implements CharSequence, Comparable<T
     }
 
     @NotNull
-    protected abstract String check(final @NotNull String s);
+    protected abstract boolean valid(final @NotNull String s);
 
     @Override
     public boolean equals(final Object o) {
