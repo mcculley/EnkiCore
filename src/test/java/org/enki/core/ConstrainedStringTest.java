@@ -23,11 +23,13 @@ public class ConstrainedStringTest {
         private static final Pattern pattern = Pattern.compile("[\\p{Digit}\\p{Upper}]+");
 
         @Override
+        @NotNull
         protected Pattern pattern() {
             return pattern;
         }
 
         @Override
+        @NotNull
         public String toString() {
             return sign;
         }
