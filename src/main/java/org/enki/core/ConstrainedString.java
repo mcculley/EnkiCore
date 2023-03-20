@@ -8,6 +8,11 @@ import java.util.regex.Pattern;
 /**
  * A <code>String</code> that matches a defined <code>Pattern</code>. This is subclassed where one would want to subclass a
  * <code>String</code> to ensure that instances are always of a specific <code>Pattern</code>.
+ * <p>
+ * In many cases, calling code will want to call toString() to get the actual String, but as this class implements CharSequence
+ * using toString(), instances can be passed directly where CharSequence is accepted.
+ * <p>
+ * Note that this pattern would not be necessary if it were legal in Java to subclass String.
  *
  * @param <T> the type of the subclass, which is necessary for the Comparable bound to work.
  */
