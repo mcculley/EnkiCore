@@ -45,6 +45,12 @@ public abstract class ConstrainedString<T> implements CharSequence, Comparable<T
         return toString().subSequence(start, end);
     }
 
+    /**
+     * Subclasses must implement this to indicate if a supplied String is valid for the constraint.
+     *
+     * @param s the String to test
+     * @return <code>true</code> if s is valid
+     */
     @NotNull
     protected abstract boolean valid(final @NotNull String s);
 
