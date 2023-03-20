@@ -58,7 +58,7 @@ public class CachingConnection extends WrappedConnection {
         return new CachingPreparedStatement(s, sql);
     }
 
-    private class CachingStatement implements Statement {
+    private static class CachingStatement implements Statement {
 
         protected final Statement backingStatement;
         protected final String SQL;
@@ -647,7 +647,7 @@ public class CachingConnection extends WrappedConnection {
                 resultSetMetaData = new CachedResultSetMetadata(source.getMetaData());
                 while (source.next()) {
                     final int columnCount = resultSetMetaData.getColumnCount();
-                    final Object row[] = new Object[columnCount];
+                    final Object[] row = new Object[columnCount];
                     for (int i = 0; i < columnCount; i++) {
                         row[i] = source.getObject(i + 1);
                     }
