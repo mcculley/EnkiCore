@@ -37,6 +37,25 @@ public class Enums {
     }
 
     /**
+     * Given an instance of an enum value, find the next value.
+     *
+     * @param t   the enum value
+     * @param <T> the enum type
+     * @return the next value
+     * @throws IllegalStateException if there is no next value
+     */
+    @NotNull
+    public static <T extends Enum<T>> T next(final @NotNull T t) {
+        final int index = t.ordinal();
+        final Enum<T>[] constants = t.getClass().getEnumConstants();
+        if (index == constants.length - 1) {
+            throw new IllegalStateException(String.format("no enum value in %s after %s", t.getClass(), t));
+        } else {
+            return (T) constants[index + 1];
+        }
+    }
+
+    /**
      * Given an instance of an enum value, find the next value, rotating to the beginning if necessary.
      *
      * @param t   the enum value
@@ -51,6 +70,25 @@ public class Enums {
             return (T) constants[0];
         } else {
             return (T) constants[index + 1];
+        }
+    }
+
+    /**
+     * Given an instance of an enum value, find the previous value.
+     *
+     * @param t   the enum value
+     * @param <T> the enum type
+     * @return the previous value
+     * @throws IllegalStateException if there is no previous value
+     */
+    @NotNull
+    public static <T extends Enum<T>> T prev(final @NotNull T t) {
+        final int index = t.ordinal();
+        final Enum<T>[] constants = t.getClass().getEnumConstants();
+        if (index == 0) {
+            throw new IllegalStateException(String.format("no enum value in %s before %s", t.getClass(), t));
+        } else {
+            return (T) constants[index - 1];
         }
     }
 
