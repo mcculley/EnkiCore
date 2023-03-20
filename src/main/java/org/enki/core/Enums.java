@@ -44,7 +44,7 @@ public class Enums {
      * @return the next value
      */
     @NotNull
-    public static <T extends Enum<T>> T next(final @NotNull T t) {
+    public static <T extends Enum<T>> T nextModular(final @NotNull T t) {
         final int index = t.ordinal();
         final Enum<T>[] constants = t.getClass().getEnumConstants();
         if (index == constants.length - 1) {
@@ -62,7 +62,7 @@ public class Enums {
      * @return the previous value
      */
     @NotNull
-    public static <T extends Enum<T>> T prev(final @NotNull T t) {
+    public static <T extends Enum<T>> T prevModular(final @NotNull T t) {
         final int index = t.ordinal();
         final Enum<T>[] constants = t.getClass().getEnumConstants();
         if (index == 0) {
