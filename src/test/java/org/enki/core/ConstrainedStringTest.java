@@ -15,12 +15,8 @@ public class ConstrainedStringTest {
 
     private static class CallSign extends RegularExpressionConstrainedString<CallSign> {
 
-        @NotNull
-        private final String sign;
-
         public CallSign(@NotNull final String sign) {
             super(sign);
-            this.sign = sign;
         }
 
         private static final Pattern pattern = Pattern.compile("[\\p{Digit}\\p{Upper}]+");
@@ -31,17 +27,13 @@ public class ConstrainedStringTest {
             return pattern;
         }
 
-        @Override
-        @NotNull
-        public String toString() {
-            return sign;
-        }
-
     }
 
     @Test
     public void testCallSign() {
         final CallSign cWDC4444 = new CallSign("WDC4444");
+        assertNotEquals("WDC4444", cWDC4444);
+        assertNotEquals(cWDC4444, "WDC4444");
         assertEquals("WDC4444", cWDC4444.toString());
         assertEquals(7, cWDC4444.length());
         assertEquals("DC4", cWDC4444.subSequence(1, 4));

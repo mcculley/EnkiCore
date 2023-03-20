@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
  */
 public abstract class RegularExpressionConstrainedString<T> extends ConstrainedString<T> {
 
+    @NotNull
+    private final String value;
+
     /**
      * Create a new <code>String</code> that satisfies the defined <code>Pattern</code>.
      *
@@ -19,11 +22,12 @@ public abstract class RegularExpressionConstrainedString<T> extends ConstrainedS
      */
     protected RegularExpressionConstrainedString(@NotNull String value) {
         super(value);
+        this.value = value;
     }
 
     @NotNull
     @Override
-    protected boolean valid(final @NotNull String s) {
+    protected final boolean valid(final @NotNull String s) {
         return pattern().matcher(s).matches();
     }
 
@@ -34,5 +38,11 @@ public abstract class RegularExpressionConstrainedString<T> extends ConstrainedS
      */
     @NotNull
     protected abstract Pattern pattern();
+
+    @Override
+    @NotNull
+    public final String toString() {
+        return value;
+    }
 
 }
