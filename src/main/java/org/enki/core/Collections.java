@@ -58,9 +58,8 @@ public class Collections {
      */
     @NotNull
     public static <K, V> Set<Map.Entry<K, V>> sortByValue(final @NotNull Map<K, V> map, @NotNull final Comparator<V> c) {
-        // FIXME: Can I use Map.Entry.comparingByValue()?
         return java.util.Collections.unmodifiableSet(
-                map.entrySet().stream().sorted((o1, o2) -> c.compare(o1.getValue(), o2.getValue()))
+                map.entrySet().stream().sorted(Map.Entry.comparingByValue(c))
                         .collect(toLinkedHashMap(Map.Entry::getKey, Map.Entry::getValue)).entrySet());
     }
 
