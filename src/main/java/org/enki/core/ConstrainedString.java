@@ -71,4 +71,13 @@ public abstract class ConstrainedString<T extends Comparable<T>> implements Char
         return toString().compareTo(o.toString());
     }
 
+    /**
+     * Subclasses must implement toString() to return the constrained string.
+     *
+     * @return the constrained string
+     */
+    @NotNull
+    @Override
+    public abstract String toString();
+
 }
