@@ -3,6 +3,7 @@ package org.enki.core;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,8 +30,7 @@ public class CollectionsTest {
                 "banana", 3
         );
 
-        final Set<Map.Entry<String, Integer>> s = Collections.sortByValue(m);
-        System.err.println(s);
+        final List<Map.Entry<String, Integer>> s = Collections.sortByValue(m);
         assertEquals(m.size(), s.size());
         final List<Map.Entry<String, Integer>> l = new ArrayList<>(s);
         final List<Integer> values = l.stream().map(Map.Entry::getValue).collect(Collectors.toList());
