@@ -11,7 +11,8 @@ import java.util.Objects;
  * In many cases, calling code will want to call toString() to get the actual String, but as this class implements CharSequence
  * using toString(), instances can be passed directly where CharSequence is accepted.
  * <p>
- * Note that this pattern would not be necessary if it were legal in Java to subclass String.
+ * Note that this pattern would not be necessary if it were legal in Java to subclass String. We would not need the embedded
+ * reference to another String.
  *
  * @param <T> the type of the subclass, which is necessary for the Comparable bound to work.
  */
