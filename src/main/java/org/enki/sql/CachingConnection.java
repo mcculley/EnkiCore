@@ -412,6 +412,7 @@ public class CachingConnection extends WrappedConnection {
         }
 
         @Override
+        @Deprecated
         public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
             throw new UnsupportedOperationException();
         }
@@ -728,6 +729,7 @@ public class CachingConnection extends WrappedConnection {
         }
 
         @Override
+        @Deprecated
         public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
             throw new UnsupportedOperationException();
         }
@@ -758,6 +760,7 @@ public class CachingConnection extends WrappedConnection {
         }
 
         @Override
+        @Deprecated
         public InputStream getUnicodeStream(int columnIndex) throws SQLException {
             throw new UnsupportedOperationException();
         }
@@ -808,6 +811,7 @@ public class CachingConnection extends WrappedConnection {
         }
 
         @Override
+        @Deprecated
         public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
             throw new UnsupportedOperationException();
         }
@@ -838,6 +842,7 @@ public class CachingConnection extends WrappedConnection {
         }
 
         @Override
+        @Deprecated
         public InputStream getUnicodeStream(String columnLabel) throws SQLException {
             throw new UnsupportedOperationException();
         }
