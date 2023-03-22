@@ -47,11 +47,11 @@ public class Enums {
     @NotNull
     public static <T extends Enum<T>> T next(final @NotNull T t) {
         final int index = t.ordinal();
-        final Enum<T>[] constants = t.getClass().getEnumConstants();
+        final T[] constants = getEnumConstants(t);
         if (index == constants.length - 1) {
             throw new IllegalStateException(String.format("no enum value in %s after %s", t.getClass(), t));
         } else {
-            return (T) constants[index + 1];
+            return constants[index + 1];
         }
     }
 
@@ -65,11 +65,11 @@ public class Enums {
     @NotNull
     public static <T extends Enum<T>> T nextModular(final @NotNull T t) {
         final int index = t.ordinal();
-        final Enum<T>[] constants = t.getClass().getEnumConstants();
+        final T[] constants = getEnumConstants(t);
         if (index == constants.length - 1) {
-            return (T) constants[0];
+            return constants[0];
         } else {
-            return (T) constants[index + 1];
+            return constants[index + 1];
         }
     }
 
@@ -84,11 +84,11 @@ public class Enums {
     @NotNull
     public static <T extends Enum<T>> T prev(final @NotNull T t) {
         final int index = t.ordinal();
-        final Enum<T>[] constants = t.getClass().getEnumConstants();
+        final T[] constants = getEnumConstants(t);
         if (index == 0) {
             throw new IllegalStateException(String.format("no enum value in %s before %s", t.getClass(), t));
         } else {
-            return (T) constants[index - 1];
+            return constants[index - 1];
         }
     }
 
@@ -102,12 +102,19 @@ public class Enums {
     @NotNull
     public static <T extends Enum<T>> T prevModular(final @NotNull T t) {
         final int index = t.ordinal();
-        final Enum<T>[] constants = t.getClass().getEnumConstants();
+        final T[] constants = getEnumConstants(t);
         if (index == 0) {
-            return (T) constants[constants.length - 1];
+            return constants[constants.length - 1];
         } else {
-            return (T) constants[index - 1];
+            return constants[index - 1];
         }
+    }
+
+    // This only exists to compartmentalize the suppression of warnings. We know that T.class.getEnumConstants() returns T() but
+    // cannot express that in Java's type system.
+    @SuppressWarnings("unchecked")
+    private static <T extends Enum<T>> T[] getEnumConstants(final @NotNull T t) {
+        return (T[]) t.getClass().getEnumConstants();
     }
 
 }
