@@ -28,7 +28,7 @@ public class Collections {
      * @return a {@code Set} of entries sorted by value
      */
     @NotNull
-    public static <K, V> List<Map.Entry<K, V>> sortByValue(final @NotNull Map<K, V> map, @NotNull final Comparator<V> c) {
+    public static <K, V extends Comparable<? super V>> List<Map.Entry<K, V>> sortByValue(final @NotNull Map<K, V> map, @NotNull final Comparator<V> c) {
         return map.entrySet().stream().sorted(Map.Entry.comparingByValue(c)).collect(Collectors.toList());
     }
 
@@ -41,9 +41,8 @@ public class Collections {
      * @return a {@code Set} of entries sorted by value
      */
     @NotNull
-    public static <K, V> List<Map.Entry<K, V>> sortByValue(final @NotNull Map<K, V> map) {
-        final Comparator<V> c = (Comparator<V>) Comparator.naturalOrder();
-        return sortByValue(map, c);
+    public static <K, V extends Comparable<? super V>> List<Map.Entry<K, V>> sortByValue(final @NotNull Map<K, V> map) {
+        return sortByValue(map, Comparator.naturalOrder());
     }
 
     /**
